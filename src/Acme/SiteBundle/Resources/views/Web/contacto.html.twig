@@ -1,0 +1,13 @@
+{# empty Twig template #}
+{% extends template_parent %}
+{% block title %}
+    Contáctenos
+{% endblock %}
+{% block body %}
+    <div class="www-header" style="height: 200px; background-position: top; background-image: linear-gradient(to bottom, transparent, white), url(/img/francisco2.jpg)">
+        <span>Contáctenos</span>
+    </div>
+    <div class="sty-box-overflow-auto" style="min-height: 800px">
+    {% block component %} {{ parent() }}{% endblock %}
+    </div>
+{% endblock %}

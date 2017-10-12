@@ -1,0 +1,408 @@
+{# empty Twig template #}
+<div class="searcher-box">
+    <div id="loader_search_box_{{token}}" style="display: none;">
+        <img src="{{asset('/bundles/acmesfs/img/loading_circle.gif')}}"/> <b>Actualizando información...</b>
+    </div>
+    <div style="display: none;overflow: auto" id="preview_search_box_{{token}}">
+        {% if not readonly %}
+            <div class="preview-options">
+                {% if  permisions.modificar %}
+                    <a onclick="SearchBox_{{token}}.setLocker(true, 1)" id="button_mod_{{token}}">Editar </a>
+                {% endif %}
+                <div title="Haga click aqui para deseleccionar elemento" id="button_clear_{{token}}" class="close-clear"></div>
+            </div>
+        {% endif %}
+        <div class="search-preview-content"></div>
+    </div>
+    <div class="sty-box-padding-10" id="main_search_box_{{token}}">
+        <div class="input-group">
+            <span id="search_label_{{token}}" class="input-group-addon"><b>{{entity_name}}</b>:</span>
+            <input id="input_search_{{token}}" type="text" class="form-control" placeholder="Buscar por: {% for x in search_in %}{{x|replace({'%':''})}} {% endfor %}">
+
+            <span class="input-group-btn">
+                <input value="{{value}}" title="Haga click aqui para quitar elemento seleccionado" class="input-group-addon input-clear" id="input_search_value_{{token}}" default="" type="text" {% if required %}required=""{% endif %} name="{{name}}"/>
+                {% if not readonly %}
+                    <a id="button_search_{{token}}" class="btn btn-info"><img src="{{asset('/bundles/acmesfs/img_icons/search_mini.png')}}"/></a>
+
+                    {% if  permisions.crear %}
+                        <a onclick="SearchBox_{{token}}.setLocker(true, 1)" title="Crear nuevo elemento" style="border-radius: 0 10px 10px 0;" id="button_add_{{token}}" class="btn btn-warning"><img src="{{asset('/bundles/acmesfs/img_icons/add2.png')}}"/></a>
+                        {% endif %}
+                        {#% if  permisions.modificar %}
+                        <a onclick="SearchBox_{{token}}.setLocker(true, 1)" title="Modificar este elemento" style="border-radius: 0 10px 10px 0;display: none;" id="button_mod_{{token}}" class="btn btn-success"><img src="{{asset('/bundles/acmesfs/img_icons/edit.png')}}"/></a>
+                        {% endif %#}
+                    {% endif  %}
+            </span>
+        </div>
+    </div>
+    <div id="loader2_search_box_{{token}}" style="display: none;">
+        <img src="{{asset('/bundles/acmesfs/img/loading_mini.gif')}}"/> <b>Buscando resultados...</b>
+    </div>
+    {#<div style="display: none;position: absolute;">
+    </div>#}
+</div>
+
+<div style="display: none;opacity: 0.3;background-color: black;" id="locker_search_box_{{token}}" class="locker"></div>
+<div style="display: none;" id="form_search_box_{{token}}" class="locker">
+    <div class="locker-inner">
+        <a class="action-savelocker btn btn-warning pull-right sty-box-margin-left-5" onclick="SearchBox_{{token}}.saveLocker()">Cerrar y guardar</a>
+        <a class="btn btn-danger pull-right sty-box-margin-left-5" onclick="SearchBox_{{token}}.setLocker(false)">Cerrar</a>
+        <a class="btn btn-info pull-right sty-box-margin-left-5" onclick="SearchBox_{{token}}.setLocker(true, 2)">Listado</a>
+        <a class="btn btn-success pull-right sty-box-margin-left-5" onclick="SearchBox_{{token}}.setLocker(true, 1)">Elemento</a>
+        <h3>Editor: {{entity_name}}</h3>
+        <hr>
+        <iframe frameborder="0" style="width: 100%;height: 85%;" src=""></iframe>
+    </div>
+</div>
+<div id="floating_box_{{token}}" style="display: none;" class="locker">
+    <div class="floating-search locker-inner">
+        <center>
+            <b>Por favor seleccione un elemento:</b>
+        </center>
+        <div class="data-box floating-search-box"></div>
+        <center>
+            <a class="btn btn-danger sty-box-margin-top-5" style="cursor: pointer" onclick="SearchBox_{{token}}.setResultsBox(false)">Cerrar listado</a>
+        </center>
+    </div>
+</div>
+<style>
+    .preview-options{
+        position: relative;
+        float: right;
+
+        border-color: gainsboro;
+        border-width: 1px;
+        border-style: solid;
+        padding: 3px;
+        border-radius: 3px;
+    }
+    .input-clear {
+        background-image: url({{asset('/bundles/acmesfs/img_icons/close.png')}});
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    .close-clear {
+        background-image: url({{asset('/bundles/acmesfs/img_icons/close.png')}});
+        background-position: center;
+        background-repeat: no-repeat;
+        height: 10px;
+        width: 10px;
+        display: inline-block;
+    }
+    .locker-inner{
+        background-color: white;
+        border-radius: 5px;
+        padding: 10px;
+        border-width: 1px;
+        border-style: solid;
+        max-width: 900px;
+        margin: auto;
+        margin-top: 70px;
+        height: auto;
+        overflow: auto;
+    }
+    .locker {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        z-index: 99999999999;
+        background-image: url({{asset('/bundles/acmesfs/img/bg_trans.png')}});
+    }
+    .searcher-box{
+        border-style: solid;
+        border-width: 1px;
+        border-radius: 5px;
+        padding: 5px;
+        margin-bottom: 2px;
+        border-color: gainsboro;
+    }
+    .floating-search-box{
+        max-height: 300px;
+        overflow-y: scroll;
+        border-style: solid;
+        border-width: 1px;
+        border-radius: 5px;
+        padding: 10px;
+        z-index: 100;
+        background-color: white;
+        cursor: pointer;
+    }
+    .floating-search{
+        -webkit-box-shadow: -2px 2px 30px -1px rgba(0,0,0,0.75);
+        -moz-box-shadow: -2px 2px 30px -1px rgba(0,0,0,0.75);
+        box-shadow: -2px 2px 30px -1px rgba(0,0,0,0.75);
+
+        //margin: -5px 0 0 -20px;
+        min-width: 250px;
+        max-width: 500px;
+        border-style: solid;
+        border-width: 1px;
+        border-radius: 5px;
+        background-color: white;
+        padding: 3px;
+        z-index: 100;
+    }
+    .floating-search-box > div:hover{
+        background-color: gainsboro;
+    }
+    .data-box>*{
+        border-bottom: dotted;
+        border-bottom-color: gainsboro;
+        border-bottom-width: 1px;
+    }
+</style>
+<script>
+    var SearchBox_{{token}} = {
+        target_onchange: null,
+        flag_search_items: false,
+        last_search: "none",
+        search_in: JSON.parse('{{search_in|json_encode()|raw}}'),
+        conds: JSON.parse('{{conds|json_encode()|raw}}'),
+        object_main: '#main_search_box_{{token}}',
+        object_loader_select: "#loader_search_box_{{token}}",
+        object_loader: "#loader2_search_box_{{token}}",
+        object_results: "#floating_box_{{token}}",
+        object_select: "#preview_search_box_{{token}}",
+        object_input: "#input_search_value_{{token}}",
+        object_input_search: "#input_search_{{token}}",
+        object_button: "#button_search_{{token}}",
+        object_button_add: "#button_add_{{token}}",
+        object_button_mod: "#button_mod_{{token}}",
+        object_button_clear: "#button_clear_{{token}}",
+        object_label: "#search_label_{{token}}",
+        object_form: "#form_search_box_{{token}}",
+        url_add: "{{path("schema_editor", {entity: entity_name, bundle: bundle, modal: "true", id: 0})|raw}}",
+        url_list: "{{path("schema_list", {entity: entity_name, bundle: bundle, modal: "true"})|raw}}",
+        setLocker: function (s, mode) {
+            $(this.object_results).hide();
+
+            var locker_form = $(this.object_form);
+            var frame = $(this.object_form).find("iframe");
+            frame.attr("src", "");
+            if (s) {
+                $("#locker_search_box_{{token}}, " + this.object_form).show();
+                switch (mode) {
+                    case 2:
+                        frame.attr("src", this.url_list);
+                        $(locker_form).find(".action-savelocker").hide();
+                        break;
+                    default:
+                    case 1:
+                        frame.attr("src", this.url_add + "&id=" + $(this.object_input).val());
+                        $(locker_form).find(".action-savelocker").show();
+                        break;
+                }
+                frame.height($(window).height() - 200);
+            } else {
+                $("#locker_search_box_{{token}}, " + this.object_form).hide();
+                var selected_id = $(frame.get(0).contentDocument).find("[name=id]:first").val();
+                if (selected_id !== null && selected_id !== "") {
+                    $(this.object_input).val(selected_id).trigger("change");
+                }
+                frame.attr("src", "");
+                //this.searchItems();
+            }
+        },
+        saveLocker: function(){
+            var c = this;
+            var frame = $(this.object_form).find("iframe");
+            var schema = $(frame.get(0).contentDocument).find(".main-container-editor").prop("schema");
+            if(schema !== null && schema !== undefined){
+               console.log(schema);
+               if(schema.isFormValid()){
+                  schema.submit(function(e){
+                     if(e){
+                        c.setLocker(false);
+                     }
+                  });
+               } else {
+                  schema.showMessage("danger", "Formulario incompleto", "Por favor diligencie todos los campos");
+               }
+            }
+        },
+        setResultsBox: function (s) {
+            var context = this;
+            if (s) {
+                $(context.object_results).show();
+            } else {
+                $(context.object_results).hide();
+            }
+        },
+        searchItems: function () {
+            var context = this;
+            if (context.flag_search_items)
+                return;
+            context.flag_search_items = true;
+            var search = $(context.object_input_search).val().trim();
+            context.last_search = search;
+
+            $(context.object_input_search).val("");
+            //console.log("Search for: " + search);
+            context.toggleView(0);
+            $(context.object_loader).show();
+            $.ajax({
+                url: '{{path('url_search_service')}}',
+                data: {
+                    entity: '{{entity}}',
+                    key: '{{key}}',
+                    search_in: context.search_in,
+                    conds: context.conds,
+                    token: '{{token}}',
+                    search: search
+                },
+                error: function (e) {
+                    console.log(e);
+
+                    context.flag_search_items = false;
+                    $(context.object_loader).hide();
+                    $(context.object_results).find(".data-box").html('<b>Error al obtener resultados</b>');
+                    $(context.object_results).show();
+                    context.toggleView(1);
+                },
+                success: function (r) {
+                    context.flag_search_items = false;
+                    $(context.object_loader).hide();
+
+                    var fb = $(context.object_results).find(".data-box");
+                    $(context.object_results).find(".floating-search").width($(context.object_main).width());
+                    $(fb).html(r.html_out);
+                    context.setResultsBox(true);
+                    $(fb).children("b").click(function () {
+                        context.setResultsBox(false);
+                    });
+
+                    $(fb).children("div").click(function () {
+                        context.setResultsBox(false);
+                        var cur_key = $(this).attr("key");
+                        $(context.object_input).val(cur_key).trigger("change");
+                    });
+
+                    var results_count = $(fb).children("div").size();
+                    if (results_count < 1) {
+                        $(fb).html('<b>No se obtuvieron resultados {% if permisions.modificar %} <a onclick="SearchBox_{{token}}.setLocker(true, 1)">Crear nuevo</a>{% endif %}</b>');
+                    }
+
+                    //Si el resultado es el mismo, seleccionarlo automaticamente.
+                    context.toggleView(1);
+                    if (results_count === 1) {
+                        context.toggleView(0);
+                        $(fb).children("div").click();
+                    }
+                },
+                complete: function(){
+                }
+            });
+        },
+        toggleView: function (st) {
+            $(this.object_main).hide();
+            $(this.object_select).hide();
+            switch (st) {
+                //case 0:
+                //    break;
+                case 1:
+                    $(this.object_main).show();
+                    break;
+                case 2:
+                    $(this.object_select).show();
+                    break;
+            }
+        },
+        previewElement: function (id) {
+            var context = this;
+            context.toggleView(0);
+            $(context.object_results).find(".data-box").html("");
+            $(context.object_select).find(".search-preview-content").html("");
+            $(context.object_loader_select).show();
+
+            //$(context.object_button_add).show();
+            //$(context.object_button_mod).hide();
+
+            $.ajax({
+                url: '{{path('url_search_service')}}',
+                data: {
+                    entity: '{{entity}}',
+                    key: '{{key}}',
+                    id: id
+                },
+                success: function (r) {
+                    var params = r.ajax_data !== undefined ? r.ajax_data : [];
+                    $(context.object_select).find(".search-preview-content").html(r.html_out);
+
+                    if (params.length > 0) {
+                        //$(context.object_button_add).hide();
+                        //$(context.object_button_mod).show();
+                        context.toggleView(2);
+                    } else {
+                        $(context.object_input).val("");
+                        context.toggleView(1);
+                    }
+
+                    $(context.object_loader_select).hide();
+                    if (context.target_onchange !== null) {
+                        context.target_onchange(params);
+                    }
+                    //$(context.object_loader_select).hide();
+                },
+                error: function () {
+                    $(context.object_select).find(".search-preview-content").html("<b>" + id + " - Error al obtener información</b>");
+                    context.toggleView(1);
+                },
+                complete: function () {
+                }
+            });
+        },
+        setValue: function(v){
+            $(this.object_input).val(v).trigger("change");
+        },
+        getValue: function(){
+            return $(this.object_input).val();
+        },
+        clear: function(){
+            this.toggleView(1);
+            $(this.object_input).val("").trigger("change");
+        },
+        prepare: function () {
+            var context = this;
+            var inp_obj = $(context.object_input);
+            inp_obj.change(function () {
+                //alert("change");
+                context.previewElement($(this).val());
+            });
+
+            {% if not value == ''%}
+               context.previewElement(inp_obj.val());
+            {% endif %}
+            //context.previewElement(inp_obj.val());
+
+    {% if not readonly %}
+                $(context.object_button_clear).click(function () {
+                    //console.log("VLICKED");
+                    //console.log(context);
+                    //alert("CHA");
+                    context.clear();
+                });
+                $(context.object_button).click(function () {
+                    //console.log("VLICKED");
+                    //console.log(context);
+                    context.searchItems();
+                });
+                $(context.object_input_search).keypress(function (e) {
+                    if (e.which === 13) {
+                        //console.log("KEYPRESS");
+                        //console.log(context);
+                        e.preventDefault();
+                        context.searchItems();
+                    }
+                });
+                $(context.object_label).click(function () {
+                    $(context.object_results).slideUp();
+                });
+    {% endif %}
+            }
+        };
+        var SearchBox_{{name}} = SearchBox_{{token}};
+        $(function () {
+            SearchBox_{{token}}.prepare();
+        });
+</script>

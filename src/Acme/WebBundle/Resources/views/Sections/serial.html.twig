@@ -1,0 +1,65 @@
+{# empty Twig template #}
+{% extends "AcmeWebBundle:Default:base.html.twig" %}
+{% block component %}
+    <center>
+        <div class="panel panel-default" style="max-width: 500px;">
+            <div class="panel-heading" style="text-align: left">Ingresar clave de licencia</div>
+            <div class="panel-body">
+                <img src="{{asset('/bundles/acmesfs/img/siim_logo.png')}}" width="200px"/>
+                <img src="{{asset('/img/keys.png')}}"/>
+                <form id="form_serial">
+                    <div class="sty-box-padding-20">
+                        <div id="clave_registrada" style="text-align: center;display: none">
+                            <b class="sty-font-20">Correcto</b><br>
+                            <span>La clave ha sido procesada correctamente</span><br>
+                            <a style="margin-top: 10px" href="/" class="btn btn-success">Ir al inicio</a>
+                        </div>
+                        <div id="ingresar_clave">
+                            <div style="margin-bottom: 10px">
+                                {{render(controller('AcmeSFSBundle:Serial:revisar'))}}
+                            </div>
+                            <b>Por favor ingrese la clave del la licencia:</b>
+                            <div class="input-group sty-box-margin-bottom-5">
+                                <span class="input-group-addon">Serial</span>
+                                <input type="text" required="" class="form-control" name="serial" placeholder="Ingrese el codigo">
+                            </div>
+                            <div id="serial_msgs"></div>
+                            <input class="btn btn-success" type="submit" value="Validar clave"/>
+                        </div>
+                    </div>
+                </form>
+                <script>
+                    $(function () {
+                        $("#form_serial").submit(function (e) {
+                            e.preventDefault();
+                            var data = $(this).serialize();
+                            $.ajax({
+                                url: '{{path('url_serialcheck')}}',
+                                data: data,
+                                type: 'POST',
+                                success: function (s) {
+                                    console.log(s);
+                                    switch (s.result) {
+                                        case 0:
+                                            $("#ingresar_clave").hide();
+                                            $("#clave_registrada").show();
+                                            break;
+                                        case 1:
+                                            Utils.showBootstrapNotify("#serial_msgs", "danger", "Error", "La clave de validación no es válida");
+                                            break;
+                                        case 2:
+                                            Utils.showBootstrapNotify("#serial_msgs", "danger", "Error", "La clave de validación ya ha sido utilizada");
+                                            break;
+                                    }
+                                },
+                                error: function () {
+
+                                }
+                            });
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+    </center>
+{% endblock %}

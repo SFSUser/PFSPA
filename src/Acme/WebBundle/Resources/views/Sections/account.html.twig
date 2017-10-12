@@ -1,0 +1,79 @@
+{# empty Twig template #}
+{% extends "AcmeWebBundle:Default:base.html.twig" %}
+{% block component %}
+    <div class="panel panel-default">
+        <div class="panel-heading">Cuenta de usuario actual</div>
+        <div class="panel-body">
+            {% if user_id > 0 %}
+                <form id="user_account" class="sty-box-overflow-auto">
+                    <input required="" value="update" name="action" type="hidden">
+                    <input required="" value="{{bundle}}" name="bundle" type="hidden">
+                    <input required="" value="{{entity}}" name="entity" type="hidden">
+                    <input required="" value="{{user_id}}" name="id" type="hidden">
+                    <input required="" value="{{user_id|hash(bundle, entity)}}" name="__token" type="hidden">
+                    <div class="col-md-6"><center>{{sfs_field_image({name: 'avatar'}) }}</center></div>
+                    <div class="col-md-6">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon">Nombre de usuario</span>
+                            <input value="{{user.user}}" readonly="" type="text" class="form-control">
+                        </div>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon">E-Mail</span>
+                            <input value="{{user.email}}" required="" name="email" type="email" class="form-control" placeholder="Digite el número del documento">
+                        </div>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon">Contraseña</span>
+                            <input required="" value="*****" name="password" type="password" class="form-control" placeholder="Digite el número del documento">
+                        </div>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-addon">Confirmar contraseña</span>
+                            <input required="" value="*****" name="password2" type="password" class="form-control" placeholder="Digite el número del documento">
+                        </div>
+                        <div id="msg_account" class="sty-box-margin-5"></div>
+                        <hr>
+                        <center>
+                            <button class="btn btn-info">Guardar cambios</button>
+                        </center>
+                    </div>
+                </form>
+            {% else %}
+                <h2>No hay ningún usuario que haya iniciado sesión</h2>
+            {% endif %}
+        </div>
+    </div>
+    <script>
+        $(function () {
+            $("#user_account").submit(function (e) {
+                e.preventDefault();
+                
+                if($("input[name=password2]").val() !== $("input[name=password]").val()){   
+                    Utils.showBootstrapNotify("#msg_account", "warning", "Error", "Las contraseñas no coinciden");
+                    return;
+                }
+                
+                var data = $(this).serialize();
+                var form = this;
+                setElementDisableState(form, false);
+                $.ajax({
+                    url: '{{path('schema_ajaxeditor')}}',
+                    data: data,
+                    success: function (r) {
+                        console.log(r);
+                        if (r.result > 0) {
+                            Utils.showBootstrapNotify("#msg_account", "success", "Correcto", "La información de la cuenta ha sido actualizada");
+                        } else {
+                            Utils.showBootstrapNotify("#msg_account", "danger", "Error", "Ocurrió un error al guardar los cambios");
+                        }
+                    },
+                    error: function (r) {
+                        console.log(r);
+                    },
+                    complete: function(){
+                        setElementDisableState(form, true);
+                    }
+                });
+            });
+            $("input[name=avatar]").val("{{user.avatar}}").trigger("change");
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,10 @@
+{# empty Twig template #}
+{% extends template_parent %}
+{% block title %}
+	Provincia de San Pablo Apóstol
+{% endblock %}
+{% block body %}
+	<div class="sty-box-padding-5 sheet-art " style="margin-top: 400px;">
+		{% block component %} {{ parent() }}{% endblock %}
+	</div>
+{% endblock %}

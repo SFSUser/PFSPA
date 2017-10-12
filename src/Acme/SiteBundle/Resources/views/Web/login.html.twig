@@ -1,0 +1,16 @@
+{# empty Twig template #}
+{% extends template_parent %}
+{% block title %}
+    Iniciar sesión
+{% endblock %}
+{% block body %}
+    <div style="height: 100px"></div>
+    <center>
+        <div class="panel panel-default" style="max-width: 400px;">
+            <div class="panel-heading" style="text-align: left">Inicio de sesión</div>
+            <div class="panel-body">
+                {% block component %} {{ parent() }}{% endblock %}
+            </div>
+        </div>
+    </center>
+{% endblock %}

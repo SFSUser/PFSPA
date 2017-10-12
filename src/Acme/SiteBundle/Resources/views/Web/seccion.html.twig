@@ -1,0 +1,16 @@
+{# empty Twig template #}
+{% extends template_parent %}
+{% block title %}
+    {{identificador}}
+{% endblock %}
+{% block body %}
+
+    <div class="www-header" style="background-image: linear-gradient(to bottom, transparent, white), url(/img/pfspa_2017.jpg)">
+        <span>{{identificador}}</span>
+    </div>
+    <div class="fixer sheet-art sty-box-overflow-auto sty-box-padding-5 " style="margin-top: -90px;min-height: 800px;">
+        <div class="sty-box-overflow-auto">
+    {% block component %} {{ parent() }}{% endblock %}
+        </div>
+    </div>
+{% endblock %}

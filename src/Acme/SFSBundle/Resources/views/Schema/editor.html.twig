@@ -1,0 +1,863 @@
+{# empty Twig template #}
+{% if not print_headers is null %}
+    <!-- IGNORE HEADERS -->
+    {{sfs_util('header', {"header": ""})}}
+{% endif %}
+
+<style>
+    #{{entity}}{
+        overflow: auto;
+        width: 100%;
+    }
+    #{{entity}} > div{
+        padding: 10px;
+        overflow: auto;
+        width: 50%;
+        float: left;
+    }
+    #{{entity}} > div > label{
+        display:inline-block;
+        width:30%;
+        overflow:hidden;
+        float:left;
+    }
+    #{{entity}} > div > input, #{{entity}} > div > textArea, #{{entity}} > div > select,  #{{entity}} > div > div{
+        display:inline-block;
+        width:70%;
+        border-radius: 5px;
+        border-style: solid;
+        border-width: 1px;
+        padding: 5px;
+        border-color: #DDDDDD;
+        float:left;
+    }
+
+    #{{entity}} .mce-container {
+        padding: 0px;
+        margin-top: 5px;
+        width:auto;
+    }
+    #{{entity}} .mce-container > div {
+        float: none;
+        display:block;
+        width:auto;
+    }
+    .editor-box{
+        border-style: solid;
+        border-color: #00afea;
+        border-width: 1px;
+    }
+    .editor-title{
+        background-color: #00afea;
+        color:white;
+        padding: 5px;
+    }
+    #SchemeEditor_{{entity}} [required] {
+        border-color: red;
+        //color: yellowgreen;
+        box-shadow: 0px 0px 6px 0px red;
+    }
+    #SchemeEditor_{{entity}}*:invalid {
+        border-color: red;
+        color: red;
+        box-shadow: 0px 0px 6px 0px red;
+    }
+    #SchemeEditor_{{entity}} *:valid {
+        border-color: yellowgreen;
+        //color: yellowgreen;
+        box-shadow: none;
+    }
+    #SchemeEditor_{{entity}} [readonly] {
+        border-color: gainsboro;
+        //color: yellowgreen;
+        box-shadow: none;
+    }
+    #SchemeEditor_{{entity}} *:focus {
+        //background-color: #D8D5D8;
+        background-color: #E8EFF2;
+        //color: yellowgreen;
+        box-shadow: none;
+    }
+    .input-group{
+        margin-bottom: 3px;
+    }
+    .subform-label{
+        margin-bottom: 5px;
+        padding: 3px;
+        height: 20px;
+        background-image: linear-gradient(#ccc, transparent);
+        border-radius: 10px 10px 0 0;
+        text-align: center;
+        border-style: solid;
+        border-color:gray;
+        border-width: 1px 0 0 0;
+    }
+    .subform-box{
+        background-color: #EBE5FC;
+        margin: 10px;
+        border-radius: 10px;
+    }
+    /*.subform-box:hover{
+        background-color: #D1C5E0;
+    }*/
+    .navbar-nav>li{cursor: pointer;}
+    .navbar-nav>li>a{text-shadow: 1px 1px white;}
+    .action-save:hover{background-color: #5cb85c;}
+    .action-save:active{background-color: #4cae4c;}
+    .action-create:hover{background-color: #f0ad4e;}
+    .action-create:active{background-color: #eea236;}
+    .action-new:hover{background-color: #5bc0de;}
+    .action-new:active{background-color: #46b8da;}
+    .action-print:hover{background-color: #428bca;color:white;}
+    .action-print:active{background-color: #357ebd;color:white;}
+    .action-defaults:hover{background-color: #EBE5FC;}
+
+    {#.navbar-nav>li:active{
+        background-color: gainsboro;
+    }#}
+
+    #SchemeEditor_{{entity}} .panel{
+        margin-bottom: 5px;
+    }
+    #SchemeEditor_{{entity}} .panel-body{
+        //padding: 3px;
+    }
+    #SchemeEditor_{{entity}} .alert{
+        //padding: 3px;
+        margin-bottom: 0px;
+    }
+</style>
+{% macro buttons(permisions, bundle, entity, denied_buttons) %}
+<div style="margin: 0" class="navbar navbar-default">
+  <div class="container-fluid">
+    {#<div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#"></a>
+    </div>
+    <a class="navbar-brand">
+        <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+    </a>#}
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="" id="bs-example-navbar-collapse-1">
+
+      <ul class="nav navbar-nav">
+    {% if permisions.crear and not denied_buttons.crear is defined  %}
+        <li class="create action-create"><a><img height="16" src="{{asset('/bundles/acmesfs/img_icons/save.png')}}"/> Crear</a></li>
+    {% endif %}
+    {% if permisions.modificar and not denied_buttons.modificar is defined  %}
+        <li class="save action-save action-save-create" style="display: none;"><a><img height="16" src="{{asset('/bundles/acmesfs/img_icons/save.png')}}"/> Modificar</a></li>
+    {% endif %}
+    {% if permisions.crear and not denied_buttons.nuevo is defined  %}
+        <li class="new action-new" style="display: none;"><a href="javascript:SchemaEditor_{{bundle ~ entity}}.clear()"><img height="16" src="{{asset('/bundles/acmesfs/img_icons/add2.png')}}"/> Nuevo elemento</a></li>
+    {% endif %}
+    {% if (permisions.crear or permisions.modificar) and not denied_buttons.predeterminados is defined %}
+        <li class="defaults action-defaults"><a><img height="16" src="{{asset('/bundles/acmesfs/img_icons/clear.png')}}"/> Predeterminados</a></li>
+    {% endif %}
+
+    {% if not denied_buttons.imprimir is defined %}
+        <li class="print action-print"><a><img height="16" src="{{asset('/bundles/acmesfs/img_icons/print.png')}}"/> Imprimir</a></li>
+    {% endif %}
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</div>
+{% endmacro%}
+{# ---------------------------------------------------------------------------- #}
+{% macro btns(permisions, bundle, entity, min) %}
+
+    {% if permisions.crear %}
+        <a title="Crear nuevo elemento" class="create action-create btn btn-warning {% if min %}sty-box-margin-right-10 pull-right{% endif %}">
+            {% if min %}<img height="16" src="{{asset('/bundles/acmesfs/img_icons/save.png')}}"/>{% else %} Crear nuevo elemento{% endif %}
+        </a>
+        {#<input class="create action-create action-save-create btn btn-success" type="submit" value="Crear nuevo elemento"/>#}
+    {% endif %}
+
+    {% if permisions.modificar %}
+        <a style="display: none;" title="Guardar elemento" class="save action-save action-save-create btn btn-success {% if min %}sty-box-margin-right-10 pull-right{% endif %}">
+            {% if min %}<img height="16" src="{{asset('/bundles/acmesfs/img_icons/save.png')}}"/>{% else %} Guardar elemento{% endif%}
+        </a>
+        {#<input style="display: none;" class="save action-save action-save-create btn btn-success" type="submit" value="Guardar elemento"/>#}
+    {% endif %}
+    {% if permisions.crear %}
+        <a style="display: none;" title="Nuevo elemento" class="new action-new btn btn-info {% if min %}sty-box-margin-right-10 pull-right{% endif %}" href="javascript:SchemaEditor_{{bundle ~ entity}}.clear()">
+            {% if min %}<img height="16" src="{{asset('/bundles/acmesfs/img_icons/add2.png')}}"/>{% else %} Nuevo elemento{% endif %}
+        </a>
+        {#<a style="display: none;" href="javascript:SchemaEditor_{{bundle ~ entity}}.clear('{{''|hash(bundle, entity)}}')" class="new action-new btn btn-info">Nuevo elemento</a>#}
+    {% endif %}
+    {% if permisions.crear or permisions.modificar  %}
+        <a title="Valores predeterminados" class="defaults action-defaults btn btn-default {% if min %}sty-box-margin-right-10 pull-right layout-responsive-desktop{% endif %}">
+            {% if min %}<img height="16" src="{{asset('/bundles/acmesfs/img_icons/clear.png')}}"/>{% else %} Predeterminados{% endif %}
+        </a>
+    {% endif %}
+    <a title="Imprimir" class="print action-print btn btn-primary {% if min %}sty-box-margin-right-10 pull-right layout-responsive-desktop{% endif %}">
+        {% if min %}<img height="16" src="{{asset('/bundles/acmesfs/img_icons/print.png')}}"/>{% else %} Imprimir elemento{% endif %}
+    </a>
+
+
+    {#<a href="javascript:SchemaEditor_{{bundle ~ entity}}.defaultInputs()" title="Carga los valores predeterminados" class="print action-print btn btn-default">Predeterminar</a>
+    <a style="display: none;" href="javascript:SchemaEditor_{{bundle ~ entity}}.print()" class="print action-print btn btn-primary">Imprimir</a>#}
+{% endmacro %}
+
+{% import _self as btn %}
+{% import "AcmeSFSBundle:Schema:inputs.html.twig" as forms %}
+
+<div class="main-container-editor" id="SchemeEditor_{{entity}}">
+    <form id="SchemeEditor_{{entity}}_form">
+        <div {% if print_headers is null %}class="panel panel-default"{% endif %}>
+            {{btn.buttons(permisions, bundle, entity, denied_buttons)}}
+            {% if print_headers is null %}
+                <div class="panel-heading">
+                    <b class="sty-font-15">
+                        {% if id > 0 %}<b>#{{id}} - </b> {% endif %}
+                        {% if title != null %}{{title}}{% else %}
+                            Editor para {{entity}}
+                        {% endif %}
+                        {#{btn.btns(permisions, bundle, entity, true)}#}
+                    </b>
+                 </div>
+            {% endif %}
+                <div id="bag_editor_notify-{{entity}}" style="padding: 3px;" class="messages"></div>
+            <div class="panel-body">
+                {% if permisions.modificar or permisions.crear %}
+                    <input id="SchemeEditor_{{entity}}_token" type="hidden" name="__token" value="{{__token}}"/>
+                {% endif %}
+                <div style="overflow: auto;">
+                    {% set _block = block(entity) %}
+                    {% if _block is not empty %}
+                        {{ _block|raw }}
+                    {% endif %}
+                    {% if not include_template%}
+                        {{ form_widget(form) }}
+                    {% else %}
+                        <input id="{{entity}}_id" defaultid="" name="id" value="" type="hidden"/>
+                        {% include include_template_name with  {forms: forms} %}
+                    {% endif %}
+                </div>
+
+                {#<input name="id" type="hidden" value=""/>#}
+                <div style="margin-bottom: 5px;margin-top: 5px;">
+                    <input name="action" type="hidden" value="create"/>
+                    <input class="sender-submit" type="submit" style="display: none"/>
+
+                    {#{% if sfs_granted(bundle, entity, "CREAR", 'ADMIN') %}
+                        <input class="create action-create action-save-create btn btn-success" type="submit" value="Crear nuevo elemento"/>
+                    {% endif %}
+                    {% if sfs_granted(bundle, entity, "MODIFICAR", 'ADMIN') %}
+                        <input style="display: none;" class="save action-save action-save-create btn btn-success" type="submit" value="Guardar elemento"/>
+                    {% endif %}
+                    {% if sfs_granted(bundle, entity, "CREAR", 'ADMIN') %}
+                        <a style="display: none;" href="javascript:SchemaEditor_{{bundle ~ entity}}.clear('{{''|hash(bundle, entity)}}')" class="new action-new btn btn-info">Nuevo elemento</a>
+                    {% endif %}
+                    <a href="javascript:SchemaEditor_{{bundle ~ entity}}.defaultInputs()" title="Carga los valores predeterminados" class="print action-print btn btn-default">Predeterminar</a>
+                    <a style="display: none;" href="javascript:SchemaEditor_{{bundle ~ entity}}.print()" class="print action-print btn btn-primary">Imprimir</a>
+                    <a class="cancel btn btn-danger">Cancelar</a>#}
+                    {#{btn.btns(permisions, bundle, entity, false)}#}
+                </div>
+            </div>
+        </div>
+    </form>
+    <div>
+        {#% include 'AcmeSiteBundle:Schemas:editor_inputs.html.twig' ignore missing %#}
+        {% include 'Acme' ~ bundle ~ 'Bundle:Schemas:editor_inputs.html.twig' ignore missing %}
+        {% include 'Acme' ~ bundle ~ 'Bundle:Schemas:' ~ entity ~ '_inputs.html.twig' ignore missing %}
+        <div id="SchemeEditor_{{entity}}_sub_loading" class="subform-label" style="display: none;">
+             <img src="{{asset('/bundles/acmesfs/img/loading_mini.gif')}}"/> Cargando subformulario...
+        </div>
+        <div id="SchemeEditor_{{entity}}_sub_area">
+            {% if include_sub_template %}
+                <div class="subform-label" id="SchemeEditor_{{entity}}_sub_loaded" {% if not id > 0 %}style="display: none"{% endif %}>
+                    <b>Subformulario</b>
+                </div>
+                <div class="subform-label" id="SchemeEditor_{{entity}}_sub_new" {% if id > 0 %}style="display: none"{% endif %}>
+                    <b><span class="label label-info">Recordatorio</span> Después de crear el elemento actual se mostrará el formulario completo</b>
+                </div>
+                {% if id == 0 %}
+                    <div class="col-md-4">
+                        <div class="subform-box" style="height: 170px"></div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="subform-box" style="height: 50px"></div>
+                        <div class="subform-box" style="height: 50px"></div>
+                        <div class="subform-box" style="height: 50px"></div>
+                    </div>
+                {% endif %}
+                <div id="SchemeEditor_{{entity}}_sub" class="sty-box-overflow-auto">
+                    {% include include_sub_template_name %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div style="display:none">
+      <div id="default_inputs_dialog" title='Valores predeterminados'>
+         <b>Instrucciones: </b>Con esta función podrás llenar los formularios más rápid con valores predeterminados:
+         <ul>
+            <li><b>Aplicar valores: </b>Rellenar el formulario actual con los datos por defecto configurados.</li>
+            <li><b>Guardar valores: </b>Guarda los valores escritos en el formulario actual para utilizarlos como predeterminados.</li>
+            <li><b>Limpiar: </b>Restaura los valores por defecto a los predeterminados por el sistema.</li>
+         </ul>
+         <span style="font-size: 10px;">
+            <b>Nota: </b>los valores por defecto son almacenados en la cookies del navegador actual, por lo tanto si inicia sesión en otro navegador o equipo cambiarán los datos por defecto.<br>
+         </span>
+      </div>
+   </div>
+</div>
+
+<script>
+    var SchemaEditor_{{bundle ~ entity}} = {
+        url: '{{path('schema_editor')}}',
+        bundle: '{{bundle}}',
+        entity: '{{entity}}',
+        reload_on_create: false,
+        target_onsave: null,
+        target_onload: null,
+        target_onloadsub: null,
+        target_onsaving: null,
+        entity2: '{{entity2}}',
+        id2: '{{id2}}',
+        conds: JSON.parse('{{conds|json_encode()|raw}}'),
+        element: {{element|json_encode()|raw}},
+        target_onchange: null,
+        target_validate: null,
+        target_onerror: null,
+        create_token: '{% if permisions.crear %}{{''|hash(bundle, entity)}}{% endif %}',
+        modified: false,
+        container_form: '#SchemeEditor_{{entity}}_form',
+        main_container: '#SchemeEditor_{{entity}}',
+
+
+        printError: function(e){
+            console.log(e);
+            if(typeof(e.responseText) !== 'undefined') {
+                var bet = e.responseText;
+                var msg = Utils.getTextBetween("<title>", "</title>", bet);
+
+                //return bet.substring(p1, p2);
+                //var msg = e.responseText.split('')[1].split('</title>')[0];
+
+                console.log("ERROR: " + msg);
+                var bag = $("#bag_editor_notify-{{entity}}");
+                bag.find("strong").click(function(){
+                    bag.find(".description").html(msg);
+                });
+            }
+        },
+        hide: function() {
+            var form = $("#SchemeEditor_{{entity}}");
+            $(form).slideUp(function() {
+                $(this).remove();
+            });
+        },
+        submitForm: function(){
+            var form = $("#SchemeEditor_{{entity}}_form");
+            $(form).find(".action-save-create:first").click();
+        },
+        isFormValid: function(){
+            return this.getInvalidInputs().size() <= 0;
+        },
+        getInvalidInputs: function(){
+            var form = $("#SchemeEditor_{{entity}}_form");
+            return form.find("input:invalid,select:invalid,textarea:invalid");
+        },
+        isNew: function() {
+            var form = $("#SchemeEditor_{{entity}}_form");
+            var elements = $(form).find("#{{entity}}_id");
+            return elements.val() === "";
+        },
+        //Guarda en cookies los valores predeterminados por pestaña
+        saveDefaults: function(){
+           var form = $("#SchemeEditor_{{entity}}_form");
+           form.find("select, input, textarea").each(function(){
+              var name = $(this).attr("name");
+              var c_value = $(this).val();
+              c_value = c_value === undefined ? null : c_value;
+
+              Cookies.setPermanentCookie('default_{{ bundle ~ entity }}_' + name, c_value);
+           });
+        },
+        clearDefaults: function(){
+           var form = $("#SchemeEditor_{{entity}}_form");
+           form.find("select, input, textarea").each(function(){
+              var name = $(this).attr("name");
+              Cookies.removeCookie('default_{{ bundle ~ entity }}_' + name);
+           });
+        },
+        setDisablers: function(e){
+              $(e).find("[input_disable]").each(function(){
+                var c = $(this);
+                var action = function(){
+                   var cur = c;
+                   var cur_value = cur.val();
+                   var disable_value = cur.attr("input_disable");
+                   var disable_selector = cur.attr("input_disable_selector");
+                   var disable_hide_selector = cur.attr("input_disable_hide_selector");
+                   //if(cur_value === disable_value){
+                   var parts_v = disable_value.split("|");
+
+                   var cmp = cur_value === disable_value;
+                   parts_v.forEach(function(y, x){
+                     if(y === cur_value){
+                        cmp = true;
+                     }
+                   });
+
+                   $(e).find(disable_selector)
+                   .prop("disabled", cmp).prop("readonly", cmp)
+                   .find("textarea, input, select").prop("disabled", cmp).prop("readonly", cmp);
+
+                   if(cmp){
+                      //$(e).find(disable_selector).prop("disabled", true);
+                      $(e).find(disable_hide_selector).hide();
+                   } else {
+                      //$(disable_selector).prop("disabled", false);
+                      $(e).find(disable_hide_selector).show();
+                   }
+                };
+                $(this).change(action);
+                action();
+                //}
+             });
+        },
+        defaultInputs: function(ask){
+			var c  = this;
+			var action = function(){
+				c.modified = true;
+				var form = $("#SchemeEditor_{{entity}}_form");
+				form.find("select").each(function(){
+               var name = $(this).attr("name");
+               var def_cookie = Cookies.getCookie('default_{{ bundle ~ entity }}_' + name, null);
+
+				   //var val = $(this).val();
+				   //if(val !=== "") return;
+               if(def_cookie !== null){
+                  $(this).val(def_cookie);
+               } else {
+					   $(this).find("option:first").prop('selected', true);
+               }
+               $(this).trigger("change");
+				});
+				form.find('input, textarea').each(function(){
+
+				   var val = $(this).val();
+				   var name = $(this).attr("name");
+				   var type = $(this).attr("type");
+				   type = type === undefined ? "text" : type.toLowerCase();
+
+               var def_cookie = Cookies.getCookie('default_{{ bundle ~ entity }}_' + name, null);
+				   var def = $(this).attr("default");
+
+               def = def_cookie !== null ? def_cookie : def;
+				   def = def === undefined ? null : def;
+
+				   if(type === "hidden" || $(this).prop("readonly")){
+					   return;
+				   }
+
+				   if(type === "text"){
+                  def = def === null ? " " : def;
+					   $(this).val(def).trigger("change");
+				   }
+				   if(type === "radio"){
+                  if(def === null) {
+                     var input_o = form.find('input[name="' + name + '"]:first');
+					      input_o.prop("checked", true).trigger("change");
+                  } else {
+                     var input_o = form.find('input[name="' + name + '"]');
+                     input_o.filter("[value='" + def + "']").prop("checked", true).trigger("change");
+                  }
+				   }
+				   if(type === "number"){
+                  if(def === null) {
+					      $(this).val(0);
+                  } else {
+                     $(this).val(def);
+                  }
+                  $(this).trigger("change");
+				   }
+				});
+			};
+
+				action();
+        },
+        clear: function() {
+            var form = $("#SchemeEditor_{{entity}}_form");
+            var elements = $(form).find("[name=id], #{{entity}}_id");
+            elements.val("");
+            $(form).find(".new, .save, .print").hide();
+            $(form).find(".create").show();
+            $(form).find("#SchemeEditor_{{entity}}_token").val(this.create_token);
+            //$(form).find(".save").val("Crear nuevo elemento");
+            elements.html("");
+            $("#SchemeEditor_{{entity}}_sub").html("");
+            $("#SchemeEditor_{{entity}}_sub_loaded").hide();
+            $("#SchemeEditor_{{entity}}_sub_new").show();
+        },
+        print: function() {
+            var data = {
+                bundle: this.bundle,
+                entity: this.entity,
+                id: this.element.id
+            };
+            var url = this.url + "?" + $.param(data) + "&export=print";
+            window.open(url);
+        },
+        loadSub: function(){
+            $("#SchemeEditor_{{entity}}_sub_loading").show();
+            $("#SchemeEditor_{{entity}}_sub_area").html("");
+            var context = this;
+            $.ajax({
+                url: '{{path('schema_editor')}}',
+                data: {
+                    entity: this.entity,
+                    entity2: this.entity2,
+                    bundle: this.bundle,
+                    id: this.element.id,
+                    id2: this.id2,
+                    conds: this.conds
+                    {% if title != null %}, title: '{{title}}'{% endif %}
+                },
+                success: function(e){
+                    $("#SchemeEditor_{{entity}}_sub_loading").hide();
+                    var e = $(e);
+
+                    $("#SchemeEditor_{{entity}}_sub_area").replaceWith(e.find("#SchemeEditor_{{entity}}_sub_area"));
+					if(context.target_onloadsub !== null){
+						context.target_onloadsub(e);
+					}
+                },
+                error: function(e){
+                    $("#SchemeEditor_{{entity}}_sub_loading").hide();
+                    context.printError(e);
+                }
+            });
+        },
+        showMessage: function(type, title, msg){
+            var box = $(this.container_form).find(".messages");
+            return Utils.showBootstrapNotify(box, type, title, msg);
+        },
+        clearMessages: function(){
+            var box = $(this.container_form).find(".messages");
+            box.html("");
+        },
+        submit: function(submited){
+            var form = $(this.container_form);
+            var errors = false;
+            var main_context = this;
+            if(main_context.target_validate !== null){
+                console.log("Validando editor...");
+                var result = main_context.target_validate(form);
+                if(result !== true){
+                    return;
+                }
+            }
+
+            {% if not (permisions.crear or permisions.modificar) %}
+                if(true){ return; }
+            {% endif  %}
+
+            var context = form;
+			var action = function() {
+				var box = $(context).find(".messages");
+				setElementDisableState(context, false);
+				if($(form).find("[name=id]").size() > 1){
+					$(form).find("[defaultid]").remove();
+				}
+				$(form).find("[name]").each(function(){
+				   var name = $(this).attr("name") + "";
+				   name = name.split("[").join("").split("]").join("").split("{{entity}}").join("");
+				   $(this).attr("name", name);
+				});
+				if(main_context.target_onsaving !== null){
+					main_context.target_onsaving(e);
+				}
+				var data = $(form).serialize();
+				data += "&entity={{entity}}&bundle={{bundle}}&entity2=" + main_context.entity2 + "&id2=" + main_context.id2;
+				console.log(data);
+				$.ajax({
+                url: '{{path('schema_ajaxeditor')}}',
+                data: data,
+                type: "POST",
+                success: function(e) {
+                    console.log(e);
+                    if(e.result === 3){
+                        Utils.showBootstrapNotify(box, "warning", "Error", "El valor '<b>" + e.value + "</b>' del campo '<b>" + e.column + "</b>' ya ha sido utilizado en otro registro y no se puede repetir.");
+                        return;
+                    }
+                    if(e.result === 0){
+                        Utils.showBootstrapNotify(box, "danger", "Error", "Error en la clave de seguridad");
+                        return;
+                    }
+
+                    main_context.element = e;
+                    main_context.modified = false;
+                    $(context).find("#{{entity}}_id, [name=id]").val(e.id);
+                    $(context).find("#SchemeEditor_{{entity}}_token").val(e.__token);
+
+                    Utils.showBootstrapNotify(box, "success", "Correcto", "Los cambios han sido guardados");
+
+                    //Call Event
+                    if(main_context.target_onchange !== null){
+                        main_context.target_onchange();
+                    }
+
+                    if(main_context.target_onsave !== null){
+                        main_context.target_onsave(e);
+                    }
+                    //console.log(e);
+
+                    //Llamar eventos de la lista.
+                    if (typeof (SchemaList_{{bundle ~ entity}}) !== 'undefined') {
+                        var schema_list = SchemaList_{{bundle ~ entity}};
+
+                        schema_list.getList();
+
+                        if(schema_list.target_onchange !== null){
+                            schema_list.target_onchange();
+                        }
+                        /*
+                        if(main_context.reload_on_create && e.exec_action === "created"){
+                            schema_list.editElement(e.id);
+                        }*/
+                    } /*else {
+                        if(main_context.reload_on_create && e.exec_action === "created"){
+                            main_context.loadSub();
+                        }
+                    }*/
+                    if(main_context.reload_on_create && e.exec_action === "created"){
+                        main_context.loadSub();
+                    }
+                    $(form).find(".print, .save, .new").show();
+                    $(form).find(".create").hide();
+                    //$(form).find(".save").val("Guardar cambios");
+                },
+                error: function(e) {
+                    errors = true;
+                    /*var msg = e.responseText;
+                    //Duplicate entry &#039;1023925033&#039;
+                    var parts = /Duplicate entry &#039;(.*?)&#039;/g.exec(msg);
+                    //last_error = e;
+                    if(parts !== null){
+                        var value = parts[1];
+                        //var inp = $(form).find("[value='" + value + "']");
+                        //var inp_name = $(inp).attr("name");
+                        Utils.showBootstrapNotify(box, "warning", "Error", "El valor '<b>" + value + "</b>' ya ha sido utilizado en otro elemento y no se puede repetir.");
+                        return;
+                    }*/
+
+                    setElementDisableState(context, true);
+                    Utils.showBootstrapNotify(box, "danger", "Error", "Ocurrió un error al intentar guardar los cambios.");
+                    main_context.printError(e);
+                    if(main_context.target_onerror !== null){
+                        main_context.target_onerror(e);
+                    }
+                },
+                complete: function(){
+                    setElementDisableState(context, true);
+                    if(typeof(submited) !== 'undefined'){
+                        submited(!errors);
+                    }
+                }
+            });
+			};
+
+            {% if not permisions.modificar%}
+				sconfirm("Advertencia", "Después de creado este elemento, no lo podrá modificar ¿Continuar?", function(c){
+					if(c){
+						action();
+					}
+				})
+                //if(!confirm('Después de creado este elemento, no lo podrá modificar ¿Continuar?')) return;
+            {% else %}
+				action();
+			{% endif %}
+        },
+        prepare: function() {
+            var main_context = this;
+            var form = $("#SchemeEditor_{{entity}}_form");
+            //var form = $("#SchemeEditor_{{entity}}");
+            $("#SchemeEditor_{{entity}}").prop("schema", this);
+            $("#SchemeEditor_{{entity}}").prop("object", this);
+            $(form).append($("#Template_{{entity}}").html());
+            $(form).find(".text-toggler").textToggler();
+
+            this.setDisablers(form);
+
+            //Añadir valores precargados
+            if (this.element !== null) {
+                for (var x in this.element.columns) {
+                    x = this.element.columns[x];
+                    console.log(x);
+                    //console.log(x.column_name + "-" + x.value);
+                    var str = "[name=" + x.column_name + "], #{{entity}}_" + x.column_name;
+
+                    if(this.conds !== null && this.conds[x.column_name] !== undefined){
+                        x.value = this.conds[x.column_name];
+                        //console.log(x.value);
+                    }
+                    //console.log(str);
+                    var form_inputs = $(form).find(str);
+                    form_inputs.each(function() {
+                        var tagname = $(this).prop("tagName");
+                        var type = $(this).attr("type") + "";
+                        var name = $(this).attr("name") + "";
+                        type = type.toLowerCase();
+                        //console.log("Ja: " + tagname);
+                        console.log("tag found:" +  tagname + " Type: " + type + " Name: " + name);
+                        if ("INPUT,TEXTAREA,SELECT".indexOf(tagname) > -1) {
+                            //console.log(type);
+                            if(type === "checkbox"){
+                                //console.log(x);
+
+                                $(this).change(function(){
+                                    if($(this).is(':checked')){
+                                        $(this).val('true');
+                                    }else{
+                                        $(this).val('false');
+                                    }
+                                });
+
+                                //$(this).val("true").trigger('change');
+                                $(this).prop("checked", x.value).trigger('change');
+                                return;
+                            }
+                            if(type === "radio"){
+                                //console.log("CheckBox!");
+                                if(x.value){
+                                    $(this).parent().find('[value="' + x.value + '"]').prop("checked", true)
+                                    $(this).trigger('change');
+                                }
+                                return;
+                            }
+                            if(type === "date"){
+                                //console.log(x);
+                                var date_str_formatted = x.list_formatted.split("T")[0].split(",")[0];
+                                $(this).val(date_str_formatted).trigger('change');
+                                return;
+                            }
+                            if(type === "datetime-local"){
+                                //console.log(x);x.list_formatted.substring(0, x.list_formatted.length - 9);
+                                console.log("Date STR " + x.list_formatted);
+                                var date_str_formatted = x.list_formatted.substring(0, x.list_formatted.length - 6);
+                                var parts = date_str_formatted.split(", ");
+                                var time = parts.length > 0 ? parts[1] : "";
+                                var date = parts[0];
+                                date_str_formatted = date.split("/").reverse().join("-") + "T" + time;
+
+                                //date_str_formatted = date_str_formatted.replace(", ", "T").split("/").join("-");
+                                console.log("Date STR " + date_str_formatted);
+                                $(this).val(date_str_formatted).trigger('change');
+                                return;
+                            }
+                            //if(type && type.toLowerCase() === "date"){
+                            //    $(this).val(x.value.split("T")[0]);
+                            //    return;
+                            //}
+                            if(x.value === null){
+                                x.value = "";
+                            }
+
+                            //For text
+                            if(x.column_length !== null && tagname == "INPUT"){
+                                $(this).attr("maxlength", x.column_length);
+                                $(this).attr("size", x.column_length);
+                            }
+                            $(this).val(x.value + "").trigger('change');
+
+                        } else if("IMG".indexOf(tagname) !== -1) {
+                            $(this).attr("src", x.value);
+                            $(this).html(x.value);
+                        }
+                    });
+
+                    //Revisa que se hayan hecho cambios.
+                    $(form_inputs).change(function(){
+                        main_context.modified = true;
+                    });
+                    /*$(form).change(function(){
+                        main_context.modified = true;
+                    });*/
+                }
+            }
+
+            $(form).find(".cancel").click(function() {
+                SchemaEditor_{{bundle ~ entity}}.hide();
+            });
+
+            if (!this.isNew()) {
+                $(form).find(".print, .new, .save").show();
+                $(form).find(".create").hide();
+                $(form).find("[onlycreate]").attr("readonly", true);
+
+                //$(form).find(".save").val("Guardar cambios");
+            }
+
+            $(form).find(".action-defaults").click(function(){
+               $("#default_inputs_dialog").dialog({
+                  resizable: false,
+                  //height:140,
+                  width: 550,
+                  modal: true,
+                  title: 'Valores predeterminados',
+                  buttons: {
+                    "Cancelar": function() {
+                       $(this).dialog("close");
+                    },
+                    "Limpiar": function(){
+                       $(this).dialog("close");
+                       main_context.clearDefaults();
+                       swal("Datos del sistema", "Los datos por defecto del formulario actual han sido cambiados por los datos iniciales del sistema.", "success");
+                    },
+                    "Guardar valores": function() {
+                       $(this).dialog("close");
+                       main_context.saveDefaults();
+                       swal("Datos guardados", "Los datos ingresados en el formulario actual quedaron guardados como valores por defecto. La proxima vez que apliques los valores predeterminados el formulario se llenará con estos datos.", "success");
+                    },
+                    "Aplicar valores": function(){
+                       $(this).dialog("close");
+                       main_context.defaultInputs();
+                    }
+                  }
+               });
+            });
+
+            $(form).find(".print").click(function(){
+                main_context.print();
+            });
+
+            $(form).find(".create, .save").click(function(){
+                $(form).find(".sender-submit").click();
+            });
+
+            {% if not (permisions.crear or permisions.modificar) %}
+               main_context.disableAll();
+            {% endif %}
+            //var main_context = this;
+            $(form).submit(function(e) {
+                e.preventDefault();
+                main_context.submit();
+            });
+
+            if(main_context.target_onload !== null){
+                main_context.target_onload();
+            }
+        },
+        disableAll: function(){
+           var form = $("#SchemeEditor_{{entity}}_form");
+           $(form).find("input, textarea, select").prop("required", false);
+           $(form).find("input, textarea").prop("readonly", true);
+           $(form).find("input[type=radio], input[type=checkbox], select").prop("disabled", true);
+        }
+    };
+</script>
+<script>
+    $(function() {
+        SchemaEditor_{{bundle ~ entity}}.prepare();
+        {% if include_sub_template %}
+            SchemaEditor_{{bundle ~ entity}}.reload_on_create = true;
+        {% endif %}
+    });
+</script>

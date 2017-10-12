@@ -1,0 +1,40 @@
+{# empty Twig template #}
+{# empty Twig template #}
+{% extends "AcmeWebBundle:Default:base.html.twig" %}
+{% block title %}
+{% endblock %}
+{% block title_spacer %}{% endblock %}
+{% block body %}
+    <div class="www-header" style="background-image: linear-gradient(to bottom, transparent, white), url(/img/pfspa_2017.jpg)">
+        <span>{% if data is not null %}Fray {{data.nombre ~ " " ~ data.apellidos}}{%else%}Se escapo...{%endif%}</span>
+    </div>
+    <div class="fixer sheet-art sty-box-overflow-auto sty-box-padding-5 " style="margin-top: -90px;min-height: 800px;">
+        <div class="sty-box-overflow-auto">
+            {% if data is not null %}
+                <div class="col-md-9 ">
+                    <div class="sty-box-overflow-auto">
+                        <a href="{{path("url_hermanos")}}" class="btn btn-danger pull-right">Volver atrás</a>
+                        {#<img src="{{x.imagen}}"/>#}
+                        <b style="font-size: 20px;">Fray {{data.nombre ~ " " ~ data.apellidos}}</b><br>
+                        <b>Cargos: </b><i>{{data.cargo}} - <b>{{data.cargoprov}}</b></i><br>
+                        {% if data.nacimiento is not null %}<b>Fecha de nacimiento: </b><i>{{data.nacimiento|date('Y/m/d')}}</i> - {% if data.fallecido is not null %}<i>{{data.fallecido|date('Y/m/d')}}</i>{% endif %}<br>{% endif %}
+
+                        <b>Lugar de origen: </b><i>{{data.lugar}}</i><br>
+                        <b>Fraternidad: </b><i>{{data.reffraternidad}}</i><br>
+                        {% if not app.session.get("hermano_id") is null %}<b>Telefono: </b><i>{{data.telefono}}</i><br>{%endif%}
+                        {% if role_granted("ADMIN") %}<b>Clave: </b><i>{{data.clave}}</i><br>{% endif %}
+                        {% if data.vsimples is not null %}<b>Votos simples: </b><i>{{data.vsimples|date('Y/m/d')}}</i><br>{% endif %}
+                        {% if data.vsolemnes is not null %}<b>Votos solemnes: </b><i>{{data.vsolemnes|date('Y/m/d')}}</i><br>{% endif %}
+                        {% if data.ordenacion is not null %}<b>Ordenación: </b><i>{{data.ordenacion|date('Y/m/d')}}</i><br>{% endif %}
+                    </div>
+                </div>                
+                <div class="col-md-3"><img  style="width: 100%; border-radius: 6px;" src="{{data.imagen}})"/></div>
+
+            {% endif %}
+        </div>
+        <div class="sty-box-padding-10">
+            <hr class="featurette-divider">
+            <p><b>Biografía:</b> {{data.biografia}}</p>
+        </div>
+    </div>
+{% endblock %}

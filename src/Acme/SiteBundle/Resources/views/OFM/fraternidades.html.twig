@@ -1,0 +1,117 @@
+{# empty Twig template #}
+{# empty Twig template #}
+{# empty Twig template #}
+{% extends "AcmeWebBundle:Default:base.html.twig" %}
+{% block title %}
+{% endblock %}
+{% block title_spacer %}{% endblock %}
+{% block body %}
+    <style>
+        .foto {
+            width: 100%;
+            height: 200px;
+            background-size: cover;
+        }
+        .hermano {
+            display: inline-block;
+            height: 370px;
+            overflow: hidden;
+            margin: 5px;
+            padding: 5px;
+            max-width: 200px;
+        }
+    </style>
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+         * element that contains the map. */
+        #map {
+            height: 400px;
+        }
+        /* Optional: Makes the sample page fill the window. */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        .fraternidad-box{
+            border-bottom-style: solid;
+            border-bottom-width: 1px;
+            border-bottom-color: gainsboro;
+            padding: 5px;
+
+        }
+    </style>
+    <div class="www-header" style="background-image: linear-gradient(to bottom, transparent, white), url(/img/pfspa_2017.jpg)">
+        <span>Directorio de los hermanos de la Provincia</span>
+        <p>El señor me dio hermanos...</p>
+    </div>
+    <div class="www-gradient-page  sty-box-overflow-auto" style="min-height: 800px;">
+        <div class="sty-box-overflow-auto fixer sheet-art sty-box-padding-5 sty-box-radius-10">
+            <h1>¿Donde estamos?</h1>
+            <hr>
+            <div id="map"></div>
+        </div>
+        <div class="fixer sheet-art sty-box-padding-10">
+            {% for x in data %}   
+                <div class="media">
+                    <a class="pull-left" href="{{path('url_fraternidad', {id: x.id})}}">
+                        <img width="90px" class="media-object" src="{{x.imagenes_first.small_square}}" alt="{{x.nombre}}">
+                    </a>
+                    <div class="media-body">
+                        <h4 class="media-heading"><a href="{{path('url_fraternidad', {id: x.id})}}">{{x.nombre}}</a></h4>
+                        <p>
+                            <span class="label label-info">{{x.ubicacion}}</span>: </b>
+                            &nbsp;
+                            {{x.contenido|raw|striptags}} <a href="{{path('url_fraternidad', {id: x.id})}}">[Leer más]</a>
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <script>
+
+            // This example displays a marker at the center of Australia.
+            // When the user clicks the marker, an info window opens.
+            var map = null;
+            function initMap() {
+                //3.7584328,-72.1739952,5.71z
+                var uluru = {lat: 4.7164451, lng: -72.6688751};
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 4,
+                    center: uluru
+                });
+
+
+            }
+            setTimeout(function () {
+            {% for x in data%}
+                    $(function () {
+                        var contentString = '<div id="content"><h4>{{x.nombre}}</h4>{{x.contenido|striptags|raw}}<a target="_blank" href="{{path('url_fraternidad', {id:x.id})}}">Abrir...</a></div>';
+                        var str = '{{x.mapa}}';
+
+                        var parts = str.split(",");
+
+                        var uluru = {lat: parseFloat(parts[0]), lng: parseFloat(parts[1])};
+
+                        var infowindow = new google.maps.InfoWindow({
+                            content: contentString
+                        });
+
+                        var marker = new google.maps.Marker({
+                            position: uluru,
+                            map: map,
+                            title: '{{x.nombre}}'
+                        });
+                        marker.addListener('click', function () {
+                            infowindow.open(map, marker);
+                        });
+                    });
+            {% endfor %}
+                }, 1000);
+        </script>
+
+        <script async defer
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBHcX0ceXQDAkjGEGO228ej2eFi_6w93fc&callback=initMap">
+        </script>
+    </div>
+{% endblock %}

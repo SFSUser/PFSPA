@@ -1,0 +1,15 @@
+{# empty Twig template #}
+{{buttons|raw}}
+{% for x in data %}
+    <div class="hermano sheet-art">
+        <div style="background-image: url({{x.imagen}})" class="foto"></div>
+        {#<img src="{{x.imagen}}"/>#}
+        <b>Fray {{x.nombre ~ " " ~ x.apellidos}}</b><br>
+        <i>{{x.cargo}} - <b>{{x.cargoprov}}</b></i><br>
+        <p>{{x.biografia|slice(0, 100)}} [...] <a href="{{path("url_hermano", {id: x.id})}}"> Más información </a></p>
+    </div>
+{% endfor %}
+{% if data is empty %}
+    <h2>No se encontraron resultados</h2>
+{% endif %}
+{{buttons|raw}}

@@ -1,0 +1,99 @@
+
+{% macro panel(title, c) %}
+    <div class="panel panel-default">
+        <div class="panel-heading">{{title}}</div>
+        <div class="panel-body">{{c|raw}}</div>
+    </div>
+{% endmacro %}
+{% macro panel_open(title) %}
+    <div class="panel panel-default">
+        <div class="panel-heading">{{title}}</div>
+        <div class="panel-body">
+{% endmacro %}
+{% macro panel_close() %}</div></div>{% endmacro %}
+
+{% macro list(name, d=['Valor'], title = "Listado de elementos") %}
+   {{sfs_field_list({name: name, columns: d, title: title}) }}
+{% endmacro %}
+
+{% macro checkbox(name, desc=null, d=[]) %}
+    <div class="input-group">
+        <span class="input-group-addon">
+            <input {% if not d.id is defined %}id="checkbox_{{name}}"{% endif %} {% if d is defined %}{% for k, v in d %}{{k}}="{{v}}"{% endfor %}{% endif %}  type="checkbox"  name="{{name}}">
+        </span>
+        <label for="checkbox_{{name}}" class="form-control">{% if not desc is null %}{{desc}}{% else %}{{ name|replace({'_':' '})|capitalize }}{% endif %}</label>
+    </div>
+{% endmacro %}
+
+{% macro textarea(name, desc=null, d=[]) %}
+    <div class="panel panel-default">
+        <div class="panel-heading">{% if not desc is null %}{{desc}}{% else %}{{ name|replace({'_':' '})|capitalize }}{% endif %}</div>
+        <div class="panel-body">
+            <textarea {% if d is defined %}{% for k, v in d %}{{k}}="{{v}}"{% endfor %}{% endif %}  name="{{name}}" class="form-control"></textarea>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro textarea_single(name, desc=null, d=[]) %}
+    <b>{% if not desc is null %}{{desc}}{% else %}{{ name|replace({'_':' '})|capitalize }}{% endif %}</b>
+    <textarea {% if d is defined %}{% for k, v in d %}{{k}}="{{v}}"{% endfor %}{% endif %}  name="{{name}}" class="form-control"></textarea>
+{% endmacro %}
+
+{% macro select(name, desc=null, options = ['No refiere', 'Si','No'], d) %}
+    <div class="input-group input-group-sm">
+        {% if desc != '' %}
+            <span class="input-group-addon">{% if not desc is null %}{{desc}}{% else %}{{ name|replace({'_':' '})|capitalize }}{% endif %}</span>
+        {% endif %}
+
+        <select  name="{{name}}" {% if d is defined %}{% for k, v in d if v != false %}{{k}}="{{v}}"{% endfor %}{% endif %} class="form-control" {% if d.required is defined and d.required != false %} required="" {% endif %}>
+            {% for x, k in options %}
+                {% if not is_assoc(options) %}
+                    <option>{{k}}</option>
+                {% else %}
+                    <option value="{{x}}">{{k}}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+{% endmacro %}
+
+{% macro radio(name, desc=null, options = ['No refiere', 'Si','No'], d = []) %}
+    {% if not d.required is defined %}
+        {% set d =  d|merge({'required': true}) %}
+    {% endif %}
+    <div class="input-group input-group-sm">
+        {% if desc != '' %}
+            <span class="input-group-addon">{% if not desc is null %}{{desc}}{% else %}{{ name|replace({'_':' '})|capitalize }}{% endif %}</span>
+        {% endif %}
+
+        <div style="height: auto;text-align: right;" class="form-control">
+            {% for x, k in options %}
+                {% if not is_assoc(options) %}
+                    <input {% if d is defined %}{% for k, v in d if v != false %}{{k}}="{{v}}"{% endfor %}{% endif %} id="{{name}}_{{x}}_{{loop.index}}" value="{{k}}" type="radio" name="{{name}}"/>
+                {% else %}
+                    <input {% if d is defined %}{% for k, v in d if v != false %}{{k}}="{{v}}"{% endfor %}{% endif %} id="{{name}}_{{x}}_{{loop.index}}" value="{{x}}" type="radio" name="{{name}}"/>
+                {% endif %}
+                <label style="margin: 0 5px 0 5px;" for="{{name}}_{{x}}_{{loop.index}}">{{k}}</label>
+            {% endfor %}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro input(name, desc=null, d=[]) %}
+    <div class="input-group input-group-sm">
+        {% if desc != '' %}
+            <span class="input-group-addon">{% if not desc is null %}{{desc}}{% else %}{{ name|replace({'_':' '})|capitalize }}{% endif %}</span>
+        {% endif %}
+
+        <input name="{{name}}" {% if d is defined %}{% for k, v in d %}{{k}}="{{v}}"{% endfor %}{% endif %} class="form-control"/>
+    </div>
+{% endmacro %}
+
+{% macro entity(name, desc=null, data, d=[]) %}
+    {% import _self as forms %}
+    {{forms.select(name, desc, sfs_entity_data(data), d)}}
+{% endmacro %}
+
+{% macro image(name, image='http://i.imgur.com/lY8kuJ4.png') %}
+    {{sfs_field_image({name: name, image: image})}}
+{% endmacro %}

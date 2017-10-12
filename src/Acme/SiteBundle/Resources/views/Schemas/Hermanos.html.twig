@@ -1,0 +1,65 @@
+<div class="sty-box-overflow-auto">
+    <div class="col-sm-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">Foto y firma</div>
+            <div class="panel-body">
+                <center>
+                    {{sfs_field_image({name: 'imagen'}) }}
+                </center>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">Datos básicos</div>
+            <div class="panel-body">
+                {{forms.input('nombre','Nombre',{required:true})}}
+                {{forms.input('apellidos','Apellidos',{required:true})}}
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">Datos de contacto</div>
+            <div class="panel-body">
+
+                {#{{forms.radio('estado','Estado',['Activo','Inactivo'])}}
+                {#<div class="input-group input-group-sm">
+                    <span class="input-group-addon">Estado</span>
+                    <select required="" class="form-control" name="estado">
+                        <option selected="" value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                    </select>
+                    {#<input required="" name="empresa" type="text" class="form-control">
+                </div>#}
+                {{forms.input('nick','Nick')}}
+                {{forms.input('clave','Contraseña',{type:'text'})}}
+                {{forms.input('clave2','Confirmar contraseña',{type:'text'})}}
+                {{forms.input('telefono','Teléfono')}}
+                {{forms.input('lugar','Lugar')}}
+                {{forms.input('cargo','Cargo', {required:true})}}
+                {{forms.input('correo','Correo', {required:true})}}
+                {{forms.input('cargoprov','Cargo provincia', {required:true})}}
+
+                {{forms.input('nacimiento','Fecha de nacimiento',{required: true, type:'date'})}}
+                {{forms.input('fallecido','Fecha de muerte',{type:'date'})}}
+                {{forms.input('vsimples','Votos simples',{type:'date'})}}
+                {{forms.input('vsolemnes','Votos solemnes',{type:'date'})}}
+                {{forms.input('ordenacion','Ordenación',{type:'date'})}}
+                <div class="input-group input-group-sm">
+                    <span class="input-group-addon">Fraternidad</span>
+                    <select name="fraternidad" class="form-control">
+                        <option value="">Ninguna</option>
+                        {{sfs_field_option({entity: 'AcmeSiteBundle:Fraternidad', label:  "nombre"}) }}
+                    </select>
+                </div>
+                {#<div class="input-group input-group-sm">
+                    <span class="input-group-addon">Ciudad / Municipio</span>
+                    <input placeholder="Municipio o ciudad en la que reside" required="" name="ciudad" type="text" class="form-control">
+                </div>#}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{{forms.textarea("biografia", "Biografía")}}

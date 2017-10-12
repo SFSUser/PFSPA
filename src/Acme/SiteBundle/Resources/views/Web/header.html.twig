@@ -1,0 +1,100 @@
+<div style="padding:10px;position:absolute; width:100%">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">PFSPA</a>
+            </div>
+            
+            {% set section = path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) %}
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li {% if '/' == section %}class="active"{% endif %}><a href="/">Inicio <span class="sr-only">(current)</span></a></li>
+                    <li {% if 'noti' in section  %}class="active"{% endif %}><a href="{{path('noticias_url')}}">Noticias</a></li>
+
+                    <li  {% if 'nosotr' in section or 'herm' in section  %}class="active"{% endif %} class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Provincia <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{path('url_nosotros')}}">Quienes somos</a></li>
+                            <li><a href="{{path("url_hermanos")}}">Hermanos</a></li>
+                            
+                                {#<li role="separator" class="divider"></li><li><a href="#">Misión - Visión</a></li>
+                                <li><a href="#">Historia</a></li>#}
+                            {#<li><a href="#">Calendario de eventos</a></li>}#}
+                            
+                        </ul>
+                    </li>
+                    {#
+                                        <li class="dropdown">
+                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Donde estamos <span class="caret"></span></a>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="{{path("url_fraternidades")}}">Fraternidades</a></li>
+                                                <li role="separator" class="divider"></li>
+                                                <li><a href="#">Luis Vero</a></li>
+                                                <li><a href="#">Popayán</a></li>
+                                                <li><a href="#">Neiva</a></li>
+                                                <li><a href="#">Medellín</a></li>
+                                                <li><a href="#">Cartago</a></li>
+                                                <li role="separator" class="divider"></li>
+                                                <li><a href="#">Galeria de fotos</a></li>}
+                                            </ul>
+                                        </li>#}
+                    <li {% if 'frater' in section %}class="active"{% endif %}><a href="{{path('url_fraternidades')}}">Fraternidades</a></li>
+                    <li {% if 'contacto' in section %}class="active"{% endif %}><a href="{{path('contacto_url')}}">Contáctenos</a></li>
+                </ul>
+                <form class="navbar-form navbar-left">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Noticias">
+                    </div>
+                    <button type="submit" class="btn btn-default">Buscar</button>
+                </form>
+                <ul class="nav navbar-nav navbar-right">
+                    {% if not app.request.session.get("hermano_id") is null %}
+                        {% set data = app.request.session.get("hermano_data") %}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img style="max-height: 25px;border-radius: 5px;" src="{{data.imagen_small_square}}"/> {{data.nick}}<span class="caret"></span></a>
+                            <ul class="dropdown-menu">                                
+                                <li><a href="{{path('url_usuario')}}">Mi perfil</a></li>
+
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{{path("url_usuario_login", {mode: "redirect"})}}">Cerrar sesión</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li style="background-color: #C6E8C4"><a href="{{path("url_usuario")}}">Iniciar sesión</a></li>
+                        {% endif %}
+                        {% if not role_granted("ADMIN") %}
+                        <li ><a href="{{path("adminlogin")}}">Iniciar sesión</a></li>
+                        {% else %}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Sesión  - {{app.user.username|upper}}<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Mi cuenta</a></li>
+                                <li><a href="{{path('add_editor', {bundle:'Site', entity: 'Fraternidad'})}}"><span class="glyphicon glyphicon-pencil"></span> Fraternidades</a></li>
+                                <li><a href="{{path('add_editor', {bundle:'Site', entity: 'Hermanos'})}}"><span class="glyphicon glyphicon-pencil"></span> Hermanos</a></li>
+                                <li><a href="{{path('add_editor', {bundle:'Site', entity: 'Posts'})}}"><span class="glyphicon glyphicon-pencil"></span> Posts</a></li>
+                                <li><a href="{{path('add_editor', {bundle:'Web', entity: 'WebNoticias'})}}"><span class="glyphicon glyphicon-pencil"></span> Noticias</a></li>
+
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{{path("adminlogout")}}">Cerrar sesión</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                </ul>
+
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+</div>
+
+<div class="sty-box-padding-10" style="position: fixed;bottom: 0;left:0;right: 0;">
+
+</div>

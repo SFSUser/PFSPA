@@ -1,0 +1,13 @@
+{# empty Twig template #}
+{% extends template_parent %}
+{% block title %}
+    Editor
+{% endblock %}
+{% block body %}
+    <div class="www-header" style="height: 200px; background-image: linear-gradient(to bottom, transparent, white),  url(/img/editor.jpeg)">
+        <span>Editor de contenidos</span>
+    </div>
+    <div class="fixer sheet-art sty-box-padding-5">
+        {% block component %} {{ parent() }}{% endblock %}
+    </div>
+{% endblock %}

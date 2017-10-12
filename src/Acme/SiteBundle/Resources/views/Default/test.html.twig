@@ -1,0 +1,103 @@
+{%extends "AcmeSiteBundle:Default:base.html.twig"%}
+{% block body %}
+    <div class="www-document">
+        <div class="fixer sheet-art sty-box-padding-5">
+            {#
+            <!-- First, include the Webcam.js JavaScript Library -->
+            <script type="text/javascript" src="{{asset('/bundles/acmesfs/plugins/webcamjs/webcam.js')}}"></script>
+
+            <div class="col-md-6">
+                <div id="my_camera"></div>
+                <form>
+                    <input type="button" value="Take Snapshot" onClick="take_snapshot()">
+                </form>
+            </div>
+            <div class="col-md-6">
+                <div id="results"></div>
+            </div>
+            <!-- Configure a few settings and attach camera -->
+            <script>
+                //$(function(){
+                Webcam.set({
+                    // live preview size
+                    width: 320,
+                    height: 240,
+                    // device capture size
+                    dest_width: 320,
+                    dest_height: 240,
+                    // final cropped size
+                    crop_width: 240,
+                    crop_height: 240,
+                    // format and quality
+                    image_format: 'jpeg',
+                    jpeg_quality: 90
+                });
+                Webcam.attach('#my_camera');
+                function take_snapshot() {
+                    // take snapshot and get image data
+                    Webcam.snap(function (data_uri) {
+                        // display results in page
+                        ImgurUploader.targetOnLoad = function (d) {
+                            console.log(d);
+                            $("#results").prepend('<img src="' + d.data.link + '"/>')
+                        };
+                        ImgurUploader.uploadOne(data_uri);
+                    });
+                }
+                //});
+            </script>
+            <hr>
+            {$title, $section, $identifier, $form_id, $input_id, $resource_values, $is_multiple}
+            <textarea id="imagenes"></textarea>
+
+            <hr>
+            {{sfs_field_imagenes({title:'Imagenes', section: 'SFS', identifier: 'PRUEBA', form_id: 'NONE', input_id: 'imagenes', resource_values: '', is_multiple: true })}}
+
+            #}
+            <div style="max-width: 300px;">
+               {{sfs_field_list({name: 'jojo', columns: {"nombre": {title: 'Nombrado', default: 'Nombre por defecto'}, "valor" : {title: 'Costo'}} }) }}
+            </div>
+            <hr>
+            <div style="max-width: 400px;">
+                {{sfs_list_select({field:'pred_usuarios',selectable: true, 'entity': 'AcmeSiteBundle:TestUser', 'entity2': 'AcmeSiteBundle:TestEmpresa', 'id2': 1})}}
+                <hr>
+                {{sfs_list_select({conds:{correo: 'buen'}, selectable: true, 'entity': 'AcmeSiteBundle:TestUser', 'entity2': 'AcmeSiteBundle:TestEmpresa', 'id2': 1})}}
+
+            </div>
+            <div>
+                {{sfs_list({'bundle': 'Site', 'entity': 'TestUser', 'entity2': 'AcmeSiteBundle:TestEmpresa', 'id2': 1})}}
+            </div>
+            <div>
+                {{sfs_list({'bundle': 'Site', 'entity': 'TestEmpresa', 'conds': {} })}}
+            </div>
+            <div>
+                {{sfs_list({'bundle': 'Site', 'entity': 'TestTelefonos', 'conds': {} })}}
+            </div>
+            <hr>
+            <div>
+                <h1>Uploader</h1>
+                {{ sfs_field_uploader({'identifier':'IPSCDOCertificado_', 'input_id' : 'testing_archivos','form_id' : 'none', 'service': true})}}
+            </div>
+            <hr>
+            <pre><code>{object.getId()}</code></pre>
+            <hr>
+            <pre>
+                {% if data.associationMappings|length > 0 %}
+                    {% for x in data.associationMappings %}
+                    <i>{{x.targetEntity}}</i><br>
+                    <i>{{x.fieldName}}</i><br>
+                        {% if x.joinColumns is defined%}
+                            {% for y in x.joinColumns %}
+                                <b>{{y.referencedColumnName}}</b><br>
+                            {% endfor%}
+                        {% endif %}
+                    {% endfor %}
+                <h1>Existe</h1>
+                {% endif %}
+            </pre>
+            <pre>
+                <CODE>{{dump(data)}}</CODE>
+            </pre>
+        </div>
+    </div>
+{% endblock %}

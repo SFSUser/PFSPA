@@ -1,0 +1,105 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : 3/12/2014, 10:36:48 AM
+    Author     : SFS
+*/
+
+.www-gradient-page{
+     background-image: linear-gradient(to top, transparent, white)
+}
+
+.gradient-box{
+    height: auto;
+    background-image: url(/img/gradient_1.fw.png);
+    background-size: auto auto;
+    background-repeat: repeat-x;
+    background-position: bottom;
+}
+
+.section-logo{
+    max-height: 90px;
+}
+
+
+::-webkit-scrollbar-track
+{
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar
+{
+    border-radius: 5px;
+    width: 10px;
+    background-color: #F5F5F5;
+}
+::-webkit-scrollbar:horizontal{
+    height: 10px;
+}
+
+::-webkit-scrollbar-thumb
+{
+    border-radius: 5px;
+    background-color: #0ae;
+
+    background-image: -webkit-gradient(linear, 0 0, 0 100%,
+        color-stop(.5, rgba(255, 255, 255, .2)),
+        color-stop(.5, transparent), to(transparent));
+}
+
+
+body{
+    background-image: url(/img/fondo.jpg);
+    /*http://i.imgur.com/VoOD9rc.jpg
+    Hojas http://i.imgur.com/j9oZj6h.jpg
+    */
+    background-repeat: repeat;
+    //background-size: cover;
+    background-attachment: fixed;
+}
+
+#main_container{
+    padding-top: 100px;
+}
+
+.fixer{
+    max-width: 800px;
+    margin: 10px auto auto auto;
+}
+.www-header{
+    height: 300px;
+    background-size: cover;
+    background-position: center;
+    padding: 100px 0 0 50px;
+}
+.www-header>span, .www-header>div>span{
+    text-shadow: 0px 0px 3px white, -1px -1px white, 1px 1px white;
+    color: black;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    width: 100%;
+    background-position: center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    font-size: 40px;
+}
+.www-header p, .sty-box-text-readable{
+    border-radius: 5px;
+    width: 50%;
+    background-color: white;
+    padding: 10px;
+    opacity: 0.7;
+    font-size: 20px;
+}
+.www-section {
+    background-color: gray;
+    padding: 15px;
+    color: white;
+}

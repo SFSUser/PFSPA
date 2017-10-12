@@ -1,0 +1,21 @@
+{# empty Twig template #}
+<div>
+    <img src="{{asset('/img/keys.png')}}" height="15px;"/> 
+    {% if not valid_license is null %}
+        <b title="{{valid_license.id}} - {{valid_license.clave}}">Licencia</b> hasta el {{valid_license.fechaVencimiento|date('Y-m-d')}} ({{diferencia}} dias)
+    {% elseif not last_license is null %}
+        <b title="{{last_license.id}} - {{last_license.clave}}">Licencia</b> vencida el {{last_license.fechaVencimiento|date('Y-m-d')}}
+    {% else %}
+        Sin licencia activa (<a href="{{path('url_serial')}}">Activar</a>)
+        {% if redirect %}
+            <script>
+                setInterval(function(){
+                    var serial_registrar = "{{path('url_serial')}}";
+                    if (document.location.pathname !== serial_registrar) {
+                        document.location = serial_registrar;
+                    }
+                }, 5000);
+            </script>
+        {% endif %}
+    {% endif %}
+</div>

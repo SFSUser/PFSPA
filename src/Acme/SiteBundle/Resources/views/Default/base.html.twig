@@ -1,0 +1,63 @@
+{# empty Twig template
+{% set seccion = app.request.requestUri %} #}
+{% if not app.request.isXmlHttpRequest()  %}
+    <!DOCTYPE html>
+    <html lang="es" class="no-js">
+        <head>
+            <link href="{{ asset('/img/favicon.png') }}" rel="Shortcut Icon" type="image/png">
+
+        {% endif %}
+        {% block site_seo %}
+            <title>{% block title %}{% endblock %}{% block title2 %}{% block title_spacer %} - {% endblock %}SFSSIIM - Sistema de gestión para IPS{% endblock %}</title>
+            <meta name="description" content="{% block description %}Bienvenido{% endblock %} - Sistema de gestión IPS">
+            <meta name="keywords" content="{% block keywords %}{% endblock %}, centrol, salud, ocupacional, ">
+        {% endblock %}
+        {% if not app.request.isXmlHttpRequest()  %}
+
+            {{sfs_util('header', {"header": ""})}}
+
+            <meta property="og:site_name" content="SFSSIIM: Sistema de gestión para IPS"/>
+            <meta property="og:type" content="{% block og_type %}website{% endblock %}"/>
+
+            {#
+            <meta property="og:description" content="" />
+            #}
+            <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+            <meta http-equiv="content-language" name="" content="es">
+            <meta http-equiv="" name="copyright" content="SFSSoft">
+            <meta http-equiv="" name="date" content="2014">
+            <meta http-equiv="" name="author" content="SFSSoft">
+            <meta http-equiv="" name="robots" content="All">
+            <meta id="view_port" name="viewport" content="width=device-width">
+
+            <link rel="stylesheet" type="text/css" href="/plugins/GoogleNexusWebsiteMenu/css/normalize.css" />
+            <link rel="stylesheet" type="text/css" href="/plugins/GoogleNexusWebsiteMenu/css/component.css" />
+            <script src="/plugins/GoogleNexusWebsiteMenu/js/modernizr.custom.js"></script>
+            <script>
+                (function (i, s, o, g, r, a, m) {
+                    i['GoogleAnalyticsObject'] = r;
+                    i[r] = i[r] || function () {
+                        (i[r].q = i[r].q || []).push(arguments)
+                    }, i[r].l = 1 * new Date();
+                    a = s.createElement(o),
+                            m = s.getElementsByTagName(o)[0];
+                    a.async = 1;
+                    a.src = g;
+                    m.parentNode.insertBefore(a, m)
+                })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+                ga('create', 'UA-57390841-1', 'auto');
+                ga('send', 'pageview');
+            </script>
+        </head>
+        <body>
+            <div class="fixer" id="main_container">
+            {% endif %}
+            {% block body %}
+            {% endblock %}
+            {% if not app.request.isXmlHttpRequest() %}
+            </div>
+        </body>
+    </html>
+{% endif %}

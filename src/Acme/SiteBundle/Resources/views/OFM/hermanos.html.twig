@@ -1,0 +1,123 @@
+{# empty Twig template #}
+{# empty Twig template #}
+{% extends "AcmeWebBundle:Default:base.html.twig" %}
+{% block title %}
+{% endblock %}
+{% block title_spacer %}{% endblock %}
+{% block body %}
+    <style>
+        .foto {
+            width: 100%;
+            height: 200px;
+            background-size: cover;
+        }
+        .hermano {
+            display: inline-block;
+            height: 370px;
+            overflow: hidden;
+            margin: 5px;
+            padding: 5px;
+            max-width: 200px;
+        }
+    </style>
+    <div class="www-header" style="background-image: linear-gradient(to bottom, transparent, white), url(/img/pfspa_2017.jpg)">
+        <span>                
+            {{render(controller('AcmeSFSBundle:Segment:index',{identifier:'OFM_nosotros_title', type: 'text'}))}}
+        </span>
+        <p>                
+            {{render(controller('AcmeSFSBundle:Segment:index',{identifier:'OFM_nosotros_descripcion', type: 'textarea'}))}}
+        </p>
+    </div>
+    <script>
+		function getListPage(v){
+			var find = $("#find_input").val();
+			
+			$("#hermanos_container").html("");
+			Hermanos.setLoading(true);
+			$.ajax({
+                    url: "{{path("ajax_hermanos_url")}}",
+                    data: {find: find, paginator_page: v},
+                    success: function (e) {
+                        $("#hermanos_container").html(e);
+                    },
+                    error: function (e) {
+                        console.log(e);
+                    },
+                    complete: function () {
+                        Hermanos.setLoading(false);
+                    }
+                });
+		}
+        var Hermanos = {
+			
+            get: function (find) {
+                $("#hermanos_container").html("");
+                this.setLoading(true);
+                $.ajax({
+                    url: "{{path("ajax_hermanos_url")}}",
+                    data: {find: find},
+                    success: function (e) {
+                        $("#hermanos_container").html(e);
+                    },
+                    error: function (e) {
+                        console.log(e);
+                    },
+                    complete: function () {
+                        Hermanos.setLoading(false);
+                    }
+                });
+            },
+            setLoading: function (e) {
+                if (e) {
+                    $("#loading").show();
+                } else {
+                    $("#loading").hide();
+                }
+            }
+        };
+        $(function () {
+            var find = $("#find_input").val();
+            Hermanos.get(find);
+            $("#hermanos_form").submit(function (e) {
+                e.preventDefault();
+                var find = $("#find_input").val();
+                Hermanos.get(find);
+            });
+        });
+    </script>
+
+
+    <div class="www-gradient-page  sty-box-overflow-auto" style="min-height: 800px;">
+
+        <div class="sty-box-overflow-auto fixer sheet-art sty-box-padding-5 sty-box-radius-10">
+
+            <div class="col-md-8">
+                <b>Ingrese el nombre, apellido o cargo:</b>
+            </div>
+            <div class="col-md-4"> 
+                <form id="hermanos_form">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input id="find_input" placeholder="Buscar hermanos..." name="find" type="text" class="form-control">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit">Buscar</button>
+                            </span> 
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <center>
+            <div id="hermanos_container" class="sty-box-overflow-auto"></div>
+            <div style="display: none;" id="loading" class="sty-box-padding-5 sty-box-margin-bottom-10">
+                <div>
+                    <center>
+                        <img style="border-radius: 100px;" src="{{asset('bundles/acmesfs/img/loading.gif')}}"/>
+                        <h3>Buscando....</h3>
+                        <p>Por favor, espere los resultados.</p>
+                    </center>
+                </div>
+            </div>
+        </center>
+    </div>
+{% endblock %}

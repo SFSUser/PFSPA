@@ -1,0 +1,33 @@
+#services.ymlads3asdas2d
+parameters:
+    acme_page.dynamic_login_listener.class: Acme\SFSBundle\DynamicLoginListener
+    acme_page.dynamic_doctrine_connection.class: Acme\SFSBundle\DynamicDoctrineConnection
+    acme_page.app_twig_extension.class: Acme\SFSBundle\Twig\AppExtension
+      
+services: 
+    my.subscriber:
+        class: Acme\SFSBundle\DinamicEntityListener
+        arguments: [@doctrine]
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+    #app: importante, representa el objeto app en plantillas twig (app.session.get)
+    app.twig_extension:
+        class: %acme_page.app_twig_extension.class%
+        public: false
+        arguments: [@service_container, @doctrine, @security.context]
+        tags:
+            - { name: twig.extension }
+    acme_page.dynamic_login_listener:
+        class:      %acme_page.dynamic_login_listener.class%
+        arguments:  [@request, @doctrine]
+        scope:      request
+        tags:
+            - { name: kernel.event_listener, event: security.interactive_login, method: onSecurityInteractiveLogin }
+    acme_page.dynamic_doctrine_connection:
+        class:      %acme_page.dynamic_doctrine_connection.class%
+        arguments:  [@request, @doctrine]
+        scope:      request
+        #calls:
+        #    - [setContainer, [@request, @doctrine]]
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }

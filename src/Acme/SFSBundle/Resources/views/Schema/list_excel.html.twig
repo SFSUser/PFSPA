@@ -1,0 +1,2 @@
+{% for x in data %}{% for y in x.columns  if not in_array(y.column_name, hide) %}{{y.list_formatted|raw}} {% endfor %}
+{% endfor %}

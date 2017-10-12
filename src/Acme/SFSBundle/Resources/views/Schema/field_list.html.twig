@@ -1,0 +1,127 @@
+<div style="margin-top:5px;margin-bottom:5px" id="FieldList_{{token}}" class="panel panel-default">
+  <div class="panel-heading">{{title}}</div>
+  <div class="panel-body" style="padding:0">
+   <script>
+      var FieldList_{{token}} = {
+         data: [],
+         columns: JSON.parse('{{columns|json_encode|raw}}'),
+         input: '#input_list_field_{{token}}',
+         table: '#input_list_table_{{token}}',
+         addNew: function(){
+            var c = this;
+            var tmp = this.getTemplate();
+            $(this.table).find("tbody").append(tmp);
+            tmp.find(".text-t").textToggler(null, function(){
+               c.saveChanges();
+            });
+            this.saveChanges();
+         },
+         getTemplate: function(){
+            var template = $(this.table).find(".template").clone();
+            template.show();
+            template.removeClass("template");
+            return template;
+         },
+         loadInput: function(){
+            var c = this;
+            var obj = $(this.input).val();
+            try{
+               obj = JSON.parse(obj);
+            } catch(e) {
+               obj = [];
+            }
+            console.log(obj);
+
+            $(this.table).find("tbody").html("");
+            //var template = this.getTemplate();
+            for(var x in obj){
+               var value = obj[x];
+               var tmp =  this.getTemplate();
+               $(this.table).find("tbody").append(tmp);
+               tmp.find(".text-t").textToggler(null, function(){
+                  c.saveChanges();
+               });
+               for(var y in value){
+                  var val = value[y];
+                  var c = tmp.find("[column=" + y + "]");
+                  $(c).find("input").val(val).trigger("change");
+                  //var tte = $(c).find(".text-toggler:first").prop("element");
+                  //tte.setValue(val);
+               }
+            }
+         },
+         prepare: function(){
+            var c = this;
+            $(this.input).change(function(){
+               c.loadInput();
+            });
+            this.loadInput();
+         },
+         saveChanges: function(){
+            var c = this;
+            var values = [];
+
+            $(this.table).find("tbody").find("tr").each(function(){
+               var tmp = {};
+               $(this).find("td").each(function(){
+                  var column = $(this).attr("column");
+                  tmp[column] = $(this).find("input").val();
+               });
+               values.push(tmp);
+            });
+            $(this.table).find("tbody").find(".text-t").each(function(){
+               var el = $(this).prop("element");
+               if(el !== null){
+                  //console.log(el);
+                  el.toggle(false);
+               }
+            });
+            var str = JSON.stringify(values);
+            //console.log("Saving..." + str);
+            console.log("Saving list... ");
+            $(this.input).val(str);
+         },
+         removeElement: function(t){
+            $(t).parent().parent().remove();
+            this.saveChanges();
+         }
+      };
+      FieldList_{{name}} = FieldList_{{token}};
+      $(function(){
+         FieldList_{{token}}.prepare();
+      })
+   </script>
+   <input type="hidden" id="input_list_field_{{token}}" name="{{name}}"/>
+   <div style="font-size: 12px">
+
+   </div>
+   <table id="input_list_table_{{token}}" class="list-table">
+      <thead>
+         <tr>
+            {% for x, v in columns %}<th>{{v.title is defined and is_assoc(columns) and is_assoc(v) ? v.title : (v|capitalize|replace({"_":" "})) }}</th>{% endfor%}<th style="width:18px"></th>
+         </tr>
+         <tr style="display:none;" class="template">
+            {% for x, v in columns %}
+               <td column="{{v}}"><span class="text-t field-type-string">{{ v.default is defined and is_assoc(columns)  and is_assoc(v) ? v.default : v }}</span></td>
+            {% endfor %}
+            <td><img title="Eliminar elemento" onclick="FieldList_{{token}}.removeElement(this)" src="{{asset('/bundles/acmesfs/img_icons/Delete.png')}}"/></td>
+         </tr>
+      </thead>
+      <tbody></tbody>
+      {#}<tfoot>
+         <tr><td colspan="{{columns|length + 1}}"><b>Nota: </b><span>Presione ENTER en cada campo para guardar cambios</span></td></tr>
+      </tfoot>#}
+   </table>
+   <div style="padding:5px">
+      <center>
+         <a class="btn btn-info " onclick="FieldList_{{token}}.addNew()">Nuevo elemento</a>
+         <a class="btn btn-success " onclick="FieldList_{{token}}.saveChanges()">Guardar todo</a>
+      </center>
+   </div>
+   {#}<center>
+      <a onclick="FieldList_{{token}}.addNew()" class="btn btn-success">Agregar nuevo</a>
+      <button  onclick="FieldList_{{token}}.prepare()">Iniciar</button>
+   </center>#}
+
+   </div>
+</div>

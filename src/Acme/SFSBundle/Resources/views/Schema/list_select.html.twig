@@ -1,0 +1,157 @@
+{# empty Twig template #}
+<script>
+    var SchemaListSelect_{{token}} = {
+        main_container: '.SchemaListSelect-{{token}}',
+        target_onchange: null,
+        bundle: '{{bundle}}',
+        selectable: '{{selectable}}',
+        entity: '{{entity}}',
+        permisions: '{{permisions_encrypt}}',
+        conds: JSON.parse('{{conds|json_encode()|raw}}'),
+        entity2: '{{entity2}}',
+        field: '{{field}}',
+        id2: '{{id2}}',
+        prepare: function () {
+            this.getList();
+        },
+        getList: function () {
+            var context = this;
+            var container = $(context.main_container).find(".item-container");
+            setElementDisableState(container, false);
+            this.setLoader(true);
+            $.ajax({
+                url: '{{path('get_schema_selectlist')}}',
+                data: {
+                    selectable: '{{selectable}}',
+                    token: '{{token}}',
+                    entity: '{{entity_full}}',
+                    entity2: this.entity2,
+                    permisions: this.permisions,
+                    id2: this.id2,
+                    field: this.field,
+                    conds: this.conds
+                },
+                success: function (r) {
+                    container.html(r);
+                },
+                complete: function (e) {
+                    context.setLoader(false);
+                    setElementDisableState(container, true);
+                }
+            });
+        },
+        setJoin: function (id, state) {
+            var context = this;
+            var ic = $(main_container).find(".item-container");
+            
+            var input_check =  ic.find("#{{token}}_input_join_" + id);
+            
+            var mode = input_check.prop("checked");
+            if(state !== undefined){
+                mode = state;
+            }
+            mode = mode ? "add" : "remove";
+            
+            var tojoin = ic.find(".table-item-" + id);
+            setElementDisableState(tojoin, false);
+            input_check.prop("disabled", true);
+            
+            $.ajax({
+                url: '{{path('schema_ajaxjoineditor')}}',
+                data: {
+                    id: id,
+                    bundle: this.bundle,
+                    entity: this.entity,
+                    field: this.field,
+                    entity2: this.entity2,
+                    id2: this.id2,
+                    action: mode
+                },
+                success: function (e) {
+                    setElementDisableState(tojoin, true);
+                    console.log(e);
+                    if (e.result > 0) {
+                        if(context.selectable !== "true"){
+                            context.getList();
+                        }
+                        if (context.target_onchange !== null) {
+                            context.target_onchange();
+                        }
+                    }
+                },
+                error: function (e) {
+                    console.log(e);
+                    Utils.showBootstrapNotify($(context.main_container).find(".messages"), "danger", "Error", "Ocurrio un error al procesar la solicitud");
+                },
+                complete: function (e) {
+                    setElementDisableState(tojoin, true);
+                    input_check.prop("disabled", false);
+                }
+            });
+        },
+        setLoader: function (st) {
+            var loader = $(this.main_container).find(".loader");
+            if (st) {
+                loader.show();
+            } else {
+                loader.hide();
+            }
+        }
+    };
+    var SchemaListSelect_{{bundle ~ entity}} = SchemaListSelect_{{token}};
+    $(function () {
+        SchemaListSelect_{{token}}.getList();
+    });
+</script>
+<style>
+    .list-select-row{
+        border-width: 1px;
+        border-color: gray;
+        border-style: solid;
+        padding: 3px;
+    }
+    .list-select-row:hover{
+        background-color: gainsboro;
+    }
+    .list-select-close{
+
+    }
+	.item-container{
+		max-height: 300px;
+		overflow-y: scroll;
+	}
+</style>
+<div id="SchemaListSelect_{{bundle ~ entity}}" class="SchemaListSelect-{{token}} panel panel-default ">
+    <div class="panel-heading">
+        {% if title is null %}<b>Selector:</b> {{entity}}{% else %}{{title}}{% endif%}
+    </div>
+    
+    {% if permisions.modificar and selectable != "true" %}
+        <div class="searchbox" style="max-width: 600px;margin:auto;margin-top: 5px;">
+            {{sfs_field_search({entity: entity_full, key: 'id', name: 'select_' ~ token, search_in: search_in})}}
+        </div>
+        <script>
+            $(function () {
+                SearchBox_select_{{token}}.target_onchange = function (data) {
+                    if (data.lenght < 1)
+                        return;
+                    SchemaListSelect_{{token}}.setJoin(data[0].id, true);
+                    this.clear();
+                };
+            });
+        </script>
+    {% endif %}
+    <div class="sty-box-padding-5">
+        <div class="messages"></div>
+        {#
+            <button onclick="SchemaListSelect_{{token}}.getList()">Obtener lista</button>
+        </center>#}
+        <div class="loader">
+            <center>
+                <img src="{{asset('/bundles/acmesfs/img/loading_mini.gif')}}"/>
+                <span>Actualizando listado</span>
+            </center>
+        </div>
+        <div class="item-container"></div>
+    </div>
+</div>

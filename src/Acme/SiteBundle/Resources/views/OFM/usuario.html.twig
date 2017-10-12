@@ -1,0 +1,174 @@
+{# empty Twig template #}
+{# empty Twig template #}
+{% extends "AcmeWebBundle:Default:base.html.twig" %}
+{% block title %}
+{% endblock %}
+{% block title_spacer %}{% endblock %}
+{% block body %}
+    <div class="www-header" style="background-image: linear-gradient(to bottom, transparent, white), url(/img/pfspa_2017.jpg)">
+        <span>{% if data is not null %}Fray {{data.nombre ~ " " ~ data.apellidos}}{%else%}Iniciar sesión{%endif%}</span>
+    </div>
+
+
+    {% if data is null %}    
+        <div class="panel panel-default fixer" style="max-width: 400px; margin-top: -100px;">
+            <div class="panel-heading" style="text-align: left">Inicio de sesión</div>
+            <div class="panel-body">
+                <center>
+                    <img src="/img/logo.png" width="200px">
+                    <form id="user_login">
+                        <div style="max-width: 400px;" class="sty-box-padding-20">
+                            <b>Por inicie sesión:</b>
+                            <div class="input-group sty-box-margin-bottom-5">
+                                <span class="input-group-addon">Usuario</span>
+                                <input type="text" class="form-control" name="usuario" placeholder="Nombre de usuario">
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon">Contraseña</span>
+                                <input type="password" class="form-control" name="contrasenia" placeholder="Contraseña">
+                            </div>
+                            <div style="margin-top: 5px;" id="user_message"></div>
+                            <input class="btn btn-success" type="submit" value="Iniciar sesión">
+                        </div>
+                    </form>
+                </center>
+            </div>
+        </div>
+        <script>
+            $("#user_login").submit(function (e) {
+                var form = this;
+                e.preventDefault();
+                $(form).css({opacity: "0.5"});
+                $.ajax({
+                    url: '{{path('url_usuario_login')}}',
+                    data: $("#user_login").serialize(),
+                    type: "POST",
+                    success: function (e) {
+                        console.log(e);
+                        switch (e.result) {
+                            case 1:
+                                location.reload();
+                                break;
+                            case 0:
+                                Utils.showBootstrapNotify("#user_message", "warning", "Error:", "Nombre de usuario o contraseña no válido.");
+                                break;
+                            default:
+                                break;
+                        }
+                    },
+                    error: function (e) {
+                        console.log(e);
+                        Utils.showBootstrapNotify("#user_message", "danger", "Error:", "Error en la respuesta del servidor.");
+                    },
+                    complete: function () {
+                        $(form).css({opacity: "1"});
+                    }
+                });
+            });
+        </script>
+    {% else %}    
+        <div class="fixer sheet-art sty-box-overflow-auto sty-box-padding-5 " style="margin-top: -90px;min-height: 800px;">
+            <div class="sty-box-overflow-auto">
+                <script>
+                    var data = JSON.parse('{{data2|json_encode()|raw}}');
+                    var disableds = ["fraternidad", "cargoprov", "nick"];
+                    $(function () {
+                        //Cargar datos
+                        for (var x in data) {
+                            var n = x;
+                            x = data[x];
+                            var el = $("[name=" + n + "]");
+                            if (el.attr("type") === "date") {
+                                console.log("found!");
+                                el.val(x.date.split(" ")[0]);
+                                console.log(x.date);
+                            } else {
+                                el.val(x);
+                            }
+                            el.trigger("change");
+                        }
+                        $("[name=clave2]").val($("[name=clave]").val());
+                        for (var x in disableds) {
+                            x = disableds[x];
+                            $("[name=" + x + "]").attr("readonly", true)
+                        }
+                    });
+                    function unlogin(b) {
+                        setElementDisableState(b, false);
+                        $.ajax({
+                            url: '{{path('url_usuario_login')}}',
+                            data: {
+                                mode: "unlogin"
+                            },
+                            success: function (e) {
+                                setElementDisableState(b, true);
+                                switch (e.result) {
+                                    case 1:
+                                        location.reload();
+                                        break;
+                                    default:
+
+                                        break;
+                                }
+                            }
+                        });
+                    }
+                </script>
+                <button onclick="unlogin(this)" class="btn btn-danger pull-right">Cerrar sesión</button>
+                <h1>Bienvenido, {{data.nombre}}</h1>
+                <hr class="featurette-divider">
+                <div>
+                    {#{sfs_editor({bundle:'Site',entity:'Hermanos', id: data2.id, permisions: ["admin"]})}#}
+
+                    <form id="hermano_data">
+                        {% import "AcmeSFSBundle:Schema:inputs.html.twig" as forms %}
+                        {% include  "AcmeSiteBundle:Schemas:Hermanos.html.twig" with {'forms': forms} %}
+                        <div style="margin-top: 5px;" id="user_message"></div>
+                        <div style="padding: 10px;">
+                            <center>
+                                <button id="buttom_submit" class="btn btn-success">Guardar cambios</button>
+                            </center>
+                        </div>
+                    </form>
+                    <script>
+                        $(function () {
+                            $("#hermano_data").submit(function (e) {
+                                var form = $(this);
+                                e.preventDefault();
+                                if($("[name=clave]").val() !== $("[name=clave2]").val()){
+                                    Utils.showBootstrapNotify("#user_message", "danger", "Error:", "Las contraseñas no coinciden.");
+
+                                    return;
+                                }
+                                setElementDisableState("#hermano_data", false);
+                                $.ajax({
+                                    url: '{{path('url_usuario_login')}}',
+                                    data: $(form).serialize()+"&mode=save",
+                                    type: "POST",
+                                    success: function (e) {
+                                        console.log(e);
+                                        switch (e.result) {
+                                            case 1:
+                                                Utils.showBootstrapNotify("#user_message", "success", "Correcto:", "Cambios guardados.");
+
+                                                break;
+                                            case 0:
+                                                //location.reload();
+                                                break;
+                                        }
+                                    },
+                                    error: function (e) {
+                                        console.log(e);
+                                    },
+                                    complete: function (e) {
+                                        setElementDisableState("#hermano_data", true);
+                                    }
+                                });
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,84 @@
+{% macro row(p, data, bundle, entity, entity2, joined, hide) %}
+    {% for x in data if joined == x.joined %}
+        {#% set tmp_permisions = x.permisions %#}
+        {% set tmp_permisions = x.permisions %}
+        
+        <tr class="table-item-{{x.id}}" data="{{x.id}}" id="element_{{x.id}}">
+            <td style="text-align: center;">
+                {% if tmp_permisions.escritura %}
+                    {% if entity2 != '' %}
+                        <img {% if x.joined %}style="display:none"{% endif %} class="list-action-add" title="Agregar a la lista" onclick="SchemaList_{{bundle ~ entity}}.joinElement({{x.id}}, true)" src="{{asset('/bundles/acmesfs/img_icons/add.png')}}"/>
+                        <img {% if not x.joined %}style="display:none"{% endif %} class="list-action-quit" title="Quitar de la lista" onclick="SchemaList_{{bundle ~ entity}}.joinElement({{x.id}}, false)" src="{{asset('/bundles/acmesfs/img_icons/close.png')}}"/>
+                    {% endif %}
+                    <img class="list-action-edit" onclick="SchemaList_{{bundle ~ entity}}.editElement({{x.id}})" src="{{asset('/bundles/acmesfs/img_icons/open.png')}}"/>
+                
+                    {% if tmp_permisions.modificar  %}
+                        <img class="list-action-save" onclick="SchemaList_{{bundle ~ entity}}.saveElement({{x.id}}, '{{x.id|hash(bundle, entity)}}')" src="{{asset('/bundles/acmesfs/img_icons/save.png')}}"/>
+                    {% endif %}
+                    {% if tmp_permisions.eliminar  %}
+                        <img class="list-action-delete" onclick="SchemaList_{{bundle ~ entity}}.deleteElement({{x.id}}, '{{x.id|hash(bundle, entity, 'ELIMINAR')}}')" src="{{asset('/bundles/acmesfs/img_icons/Delete.png')}}"/>
+                    {% endif %}
+                {% endif %}                     
+                <img onclick="SchemaList_{{bundle ~ entity}}.printElement({{x.id}})" src="{{asset('/bundles/acmesfs/img_icons/print.png')}}"/>
+            </td>
+            {% for y in x.columns if not in_array(y.column_name, hide)  %}
+                {#% if loop.index < 8 %#} 
+                <td><span type="{{y.column_type}}" class="text-toggler field-type-{{y.column_type}}" name="{{y.column_name}}">{{y.list_formatted|raw}}</span></td>
+                {#% endif %#}
+            {% endfor %}
+        </tr>
+    {% endfor %}
+{% endmacro %}
+{% import _self as table %}
+
+
+{% if app.user.hasRole is defined and app.user.hasRole('ROLE_' ~ bundle ~ '_' ~ entity ~ '_NOT_LECTURA') %}
+    <tr>
+        <td style="height: 4px;font-size: 20px;" colspan="{{data|length > 0? data[0].columns|length + 1 : 1}}">No tiene permisos para visualizar el contenido de esta tabla.</td>
+    </tr>
+{% else %}
+    {% if buttons != '' %}
+        <tr>
+            <td style="padding-bottom: 40px" colspan="{{data|length > 0? data[0].columns|length + 1 : 1}}">
+                <div style="position: absolute">{{buttons|raw}}</div>
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td style="" colspan="{{data|length > 0? data[0].columns|length + 1 : 1}}">
+                {% if data|length > 0 %}<b>{{data|length}}</b> elementos en esta pagina{% endif %}
+            </td>
+        </tr>
+    {% endif %}
+    
+    {{table.row(permisions, data_joined, bundle, entity, entity2, true, hide)}}
+    {{table.row(permisions, data, bundle, entity, entity2, false, hide)}}
+
+    {% for x in data %}
+        {% if loop.index == 1 and resultados|length > 1 %}
+        <tr>
+            <td></td>
+            {% for y in x.columns %}
+                <td>
+                    {% if attribute(resultados, y.column_name) is defined %}
+                        <span class="text-toggler">{{attribute(resultados, y.column_name)|round(1, 'floor') }}</span>
+                    {% endif %}
+                </td>
+            {% endfor %}
+        </tr>
+        {% endif %}
+    {% endfor %}
+    {% if buttons != '' %}
+        <tr>
+            <td style="padding-bottom: 40px" colspan="{{data|length > 0? data[0].columns|length + 1 : 1}}">
+                <div style="position: absolute">{{buttons|raw}}</div>
+            </td>
+        </tr>
+    {% endif %}
+    {#
+        <tr>
+            <td style="padding-bottom: 40px" colspan="{{data|length > 0? data[0].columns|length + 1 : 1}}">
+                <div style="position: absolute">JSON: {{resultados|json_encode()}}</div>
+            </td>
+        </tr>#}
+{% endif %}

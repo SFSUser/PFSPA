@@ -1,0 +1,12 @@
+{# empty Twig template #}
+{% extends template_parent %}
+{% block title %}
+    Cuentas de usuario
+{% endblock %}
+{% block body %}
+    <div class="sheet-art sty-box-padding-10">
+        {% include 'AcmeSiteBundle:Default:page_header.html.twig' with {section: 'Mi cuenta', subsection: 'Módulo de administración', image: '/img/accounts.png'} %}
+
+    {% block component %} {{ parent() }}{% endblock %}
+    </div>
+{% endblock %}

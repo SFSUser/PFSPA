@@ -1,0 +1,12 @@
+{% if data is empty %}
+    <div class="list-select-row sty-box-text-center">Por favor agregue elementos a la lista</div>
+{% endif %}
+{% for x in data%}
+    <div class="table-item-{{x.id}} list-select-row">
+        
+            {#<img onclick="SchemaListSelect_{{token}}.setJoin('{{x.id}}', false)" src="{{asset('/bundles/acmesfs/img/close.png')}}"/>#}
+            <input {% if not permisions.modificar %}disabled=""{% endif %} id="{{token}}_input_join_{{x.id}}" {% if x.joined %}checked="checked"{% endif %} type="checkbox" onclick="SchemaListSelect_{{token}}.setJoin('{{x.id}}')"/> 
+        
+        <label for="{{token}}_input_join_{{x.id}}"> {{x.label}}</label>
+    </div>
+{% endfor %}

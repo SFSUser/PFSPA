@@ -1,0 +1,13 @@
+{# empty Twig template #}
+
+{% if exist_search %}
+    {% for x in data %}
+        {% include template_search with {element: x, x: x}%}
+    {% endfor %}
+{% else %}
+    {% for x in basic_data %}
+        <div key="{{x.key}}" label="{{x.label}}">
+            {{x.label}}
+        </div>
+    {% endfor %}
+{% endif%}

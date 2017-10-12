@@ -1,0 +1,171 @@
+   {# empty Twig template #}
+   <div style="display: inline-block;width: 150px;margin: 10px">
+       <style>
+           .sty-label-photoclip{
+               position: absolute;
+               margin-bottom: -50px;
+               z-index: 10;
+               background-color: white;
+               border-radius: 5px;
+               padding: 5px;
+               border-style: solid;
+               border-width: 1px;
+               border-color: gainsboro;
+           }
+       </style>
+       <span class="sty-box-margin-5 sty-label-photoclip">{{name|capitalize}}</span>
+
+
+       <img title="{{name|capitalize}} - Haga click en la imagen para cambiarla." name="{{name}}" onerror="this.src='{{image}}'" src="{{image}}" class="sheet-art" style="width: 100%;" id="field_image_{{token}}"/>
+       <div id="camera_{{token}}">
+           <div id="camera_preview_{{token}}" class="preview sty-box-dotted" style="width: 150px;height: 150px;display: none;"></div>
+       </div>
+
+       <progress value="0" id="progress_bar_{{token}}"></progress>
+
+       <div id="upload_options_{{token}}">
+           <a class="btn btn-success" id="field_button_{{token}}" title="Seleccionar imagen del computador"><img src="{{asset('/bundles/acmesfs/img_icons/open.png')}}"/></a>
+           <a class="btn btn-warning" id="field_button_remove_{{token}}" title="Eliminar imagen actual"><img src="{{asset('/bundles/acmesfs/img_icons/remove.png')}}"/></a>
+           <a class="btn btn-info" id="field_button_camera_{{token}}" title="Tomar fotografia con la cámara"><img src="{{asset('/bundles/acmesfs/img_icons/camera.png')}}"/></a>
+       </div>
+       <div style="display: none;" id="camera_options_{{token}}">
+           <a class="btn btn-success" id="field_button_capture_{{token}}" title="Tomar foto"><img src="{{asset('/bundles/acmesfs/img_icons/camera.png')}}"/></a>
+           <a class="btn btn-warning" id="field_button_cancel_{{token}}" title="Volver"><img src="{{asset('/bundles/acmesfs/img_icons/logout.png')}}"/></a>
+       </div>
+       <input id="field_input_{{token}}" type="hidden" name="{{name}}"/>
+       <script type="text/javascript" src="{{asset('/bundles/acmesfs/plugins/webcamjs/webcam.js')}}"></script>
+       <script>
+           var FieldImage_{{token}} = {
+               camera_init: false,
+               uploader: null,
+               cameraMode: function (s) {
+                   if (s) {
+                       $("#field_image_{{token}}").hide();
+                       $("#camera_preview_{{token}}").show();
+
+                       $("#camera_options_{{token}}").show();
+                       $("#upload_options_{{token}}").hide();
+                   } else {
+                       $("#field_image_{{token}}").show();
+                       $("#camera_preview_{{token}}").hide();
+
+                       $("#camera_options_{{token}}").hide();
+                       $("#upload_options_{{token}}").show();
+                   }
+               },
+               prepare: function () {
+                   this.uploader = new ImgurUpload();
+                   var context = this;
+                   //$("#field_input_{{token}}").change(function() {
+                   $("#field_image_{{token}}").load(function () {
+                       $("#progress_bar_{{token}}").val(0);
+                   });
+                   //});
+                   $("#field_button_remove_{{token}}").click(function () {
+   					      sconfirm("Eliminar imagen", "¿Confirma que desea eliminar esta imagen?", function(c){
+             						if(c){
+             							$("#field_input_{{token}}").val("").trigger("change");
+             						}
+           					});
+                       //if (!confirm("¿Confirma que desea eliminar esta imagen?"))
+                       //    return;
+                   });
+                   $("#field_button_camera_{{token}}").click(function () {
+                       context.cameraMode(true);
+                       if (!context.camera_init) {
+                           context.initialize_cam();
+                       }
+                       context.camera_init = true;
+                   });
+                   $("#field_button_cancel_{{token}}").click(function () {
+                       context.cameraMode(false);
+                   });
+                   $("#field_button_capture_{{token}}").click(function () {
+                       var btn = this;
+                       setElementDisableState(btn, false);
+                       if (context.camera_init) {
+                           context.take_snapshot(function () {
+                               setElementDisableState(btn, true);
+                               context.cameraMode(false);
+                           });
+                       }
+                   });
+
+                   $("#field_image_{{token}}, #field_button_{{token}}").click(function () {
+                       var c = $("#field_image_{{token}}");
+                       $(c).attr('src', '{{asset('/bundles/acmesfs/img/loading.gif')}}');
+
+                       //c//onsole.log("FLAG");
+                       //
+                       context.uploader.set("progress_bar_{{token}}", null, null);
+                       context.uploader.targetOnLoad = function (data) {
+                           console.log(data);
+                           $("#progress_bar_{{token}}").removeAttr("value");
+                           var image = data.upload.links.original;
+                           $("#field_input_{{token}}").val(image).trigger("change");
+                           if (image !== "") {
+                               $(c).attr('src', image);
+                           }
+                       };
+                       context.uploader.upload();
+                   });
+
+                   var fii = $("#field_input_{{token}}");
+                   fii.change(function () {
+                       context.updateFieldImage(this);
+                   });
+                   context.updateFieldImage(fii);
+               },
+               updateFieldImage: function (i) {
+                   var val = $(i).val();
+                   var f_img = $("#field_image_{{token}}");
+                   if (val === null || val === undefined || val === "") {
+                       f_img.attr('src', '{{image}}');
+                   } else {
+                       f_img.attr("src", $(i).val());
+                   }
+               },
+               initialize_cam: function () {
+                   //$(function(){
+                   var w = 200;
+                   var h = 150;
+                   Webcam.set({
+                       // live preview size
+                       width: w,//200,
+                       height: h,//140,
+                       // device capture size
+                       dest_width: w,//200,
+                       dest_height: h,//140,
+                       // final cropped size
+                       crop_width: 140,//140,
+                       crop_height: 150,//140,
+                       // format and quality
+                       image_format: 'jpeg',
+                       jpeg_quality: 90
+                   });
+                   Webcam.attach('#camera_preview_{{token}}');
+               },
+               take_snapshot: function (tg) {
+                   var context = this;
+                   // take snapshot and get image data
+                   Webcam.snap(function (data_uri) {
+                       // display results in page
+                       Webcam.freeze();
+                       context.uploader.targetOnLoad = function (d) {
+                           Webcam.unfreeze();
+                           console.log(d);
+                           var image = d.upload.links.original;
+                           $("#field_input_{{token}}").val(image).trigger("change");
+                           //$("#results").prepend('<img src="' + d.data.link + '"/>')
+                           tg(data_uri);
+                       };
+                       context.uploader.uploadOne(data_uri);
+                   });
+               }
+           };
+           var FieldImage_{{name}} = FieldImage_{{token}};
+           $(function(){
+               FieldImage_{{token}}.prepare();
+           });
+       </script>
+   </div>

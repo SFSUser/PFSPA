@@ -1,0 +1,79 @@
+{# empty Twig template #}
+{# empty Twig template #}
+{% extends "AcmeWebBundle:Default:base.html.twig" %}
+{% block title %}
+    {% if data is not null %} Fraternidad de {{data.nombre}}{%else%}No se econtró la fraternidad...{%endif%}
+{% endblock %}
+{% block title_spacer %}{% endblock %}
+{% block body %}
+    <div class="www-header" style="background-image: linear-gradient(to bottom, transparent, white), url(/img/pfspa_2017.jpg)">
+        <span>{% if data is not null %}Fraternidad: {{data.nombre}}{%else%}No existe...{%endif%}</span>
+    </div>
+    <div class="fixer sheet-art sty-box-overflow-auto sty-box-padding-5 " style="margin-top: -90px;min-height: 800px;">
+        {% if data is not null %}
+            <div class="sty-box-overflow-auto">
+                <div>
+                    <div class="sty-box-overflow-auto">
+                        <a href="{{path("url_fraternidades")}}" class="btn btn-danger pull-right">Volver atrás</a>
+                        {#<img src="{{x.imagen}}"/>#}
+                        <b style="font-size: 20px;">{{data.nombre}}</b><br>
+                        <b>Ubicación: </b><i>{{data.ubicacion}}</i><br>
+                        <b>Teléfono: </b><i>{{data.telefono}}</i><br>
+                        <b>Dirección: </b><i>{{data.direccion}}</i><br>
+                        <b>Función: </b><i>{{data.funcion}}</i><br>
+                        <b>Correo: </b><i>{{data.correo}}</i><br>
+                    </div>
+                </div>    
+                <hr class="featurette-divider">
+                {#<div class="col-md-3"><img  style="width: 100%; border-radius: 6px;" src=""/></div>#}
+                <div>
+                    {% include "AcmeWebBundle:Segments:carousel.html.twig" with {'imagenes': data2.imagenes_all, 'titulo': "Imágenes de " ~ data2.nombre } %}
+                </div>
+                {#<pre>
+                <code>{{dump(data2)}}</code>
+                </pre>#}
+            </div>
+            <div class="sty-box-padding-10">
+                <b>Descripcion:</b>
+                <br>{{data.contenido|raw}}
+            </div>
+            <hr>
+            <h3>Hermanos de esta fraternidad</h3>
+            <hr>
+            <style>
+                .hermano-box{
+                    background-position: center;
+                    background-size: cover;
+                    height: 150px;
+                    width: 150px;
+                    border-radius: 150px;
+                    margin: 5px;
+                    border-width: 2px;
+                    border-style: solid;
+                    display: inline-block;
+                    padding-top: 100px;
+                }
+                .hermano-box>a{
+                    background-color: gainsboro;
+                    border-radius: 10px;
+                    width:100%;
+                    padding: 4px;
+                    opacity: 0.5;
+                }
+                .hermano-box>b{
+                    color:white;
+                }
+            </style>
+            <center>
+            {% for x in data.hermanos %}
+                <div class="hermano-box" style="background-image: url({{x.imagen}})">
+                    <a href="{{path('url_hermano', {id: x.id})}}">
+                        {{x.nombre}}
+                        
+                    </a><br> <b>{{x.cargo}}</b>
+                </div>
+            {% endfor %}
+            </center>
+        {% endif %}
+    </div>
+{% endblock %}
