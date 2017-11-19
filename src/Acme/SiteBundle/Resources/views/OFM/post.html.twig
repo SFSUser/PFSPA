@@ -1,0 +1,33 @@
+{# empty Twig template #}
+{# empty Twig template #}
+{% extends "AcmeWebBundle:Default:base.html.twig" %}
+{% block title %}
+{% endblock %}
+{% block title_spacer %}{% endblock %}
+{% block body %}
+    <div class="www-header" style="background-image: linear-gradient(to bottom, transparent, white), url(/img/pfspa_2017.jpg)">
+        <span>{% if data is not null %}Fray {{data.refhermano.nombre ~ " " ~ data.refhermano.apellidos}}{%else%}Post perdido...{%endif%}</span>
+    </div>
+    <div class="fixer sheet-art sty-box-overflow-auto sty-box-padding-5 " style="margin-top: -90px;min-height: 800px;">
+        <div class="sty-box-overflow-auto">
+            {% if data is not null %}
+            <table>
+              <tr>
+                <td style="text-align:center">
+                  <img style="width:90px;border-radius:90px;" src="{{data.refhermano.imagen}}"/>
+                  <br><a target="_blank" href="{{path('url_usuario', {id:data.refhermano.id})}}">@{{data.refhermano.nick}}</a>
+                </td>
+                <td><h3>{{data.titulo}}</h3></td>
+              </tr>
+            </table>
+            <hr>
+              <div>
+                {{data.descripcionFinal|raw}}
+              </div>
+                <hr>
+                <b>Tags: </b>{{data.tags}}
+                <i style="float:right;">{{data.fecha|date('Y/m/d - H:m:s')}}</i>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

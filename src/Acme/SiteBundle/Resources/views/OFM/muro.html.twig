@@ -1,0 +1,120 @@
+{# empty Twig template #}
+{# empty Twig template #}
+{% extends "AcmeWebBundle:Default:base.html.twig" %}
+{% block title %}
+{% endblock %}
+{% block title_spacer %}{% endblock %}
+{% block body %}
+    <div class="www-header" style="background-image: linear-gradient(to bottom, transparent, white), url(/img/pfspa_2017.jpg)">
+        <span>Últimas publicaciones</span>
+    </div>
+    <div class="fixer sheet-art sty-box-overflow-auto sty-box-padding-5 " style="margin-top: -90px;min-height: 800px;">
+      {% if not app.request.session.get("hermano_id") is null %}
+          {% set datas = app.request.session.get("hermano_data") %}
+          <div class="post">
+            <div style="float:left; width: 30%;text-align:center;">
+              <img style="width:180px;border-radius:100px;" src="{{datas.imagen}}"/>
+              <b>{{datas.nombre ~ " " ~ datas.apellidos}} </b>
+            </div>
+
+        <div style="float:left; width: 68%">
+            <form id="form_post">
+              <div class="input-group sty-box-margin-top-5">
+                <span class="input-group-addon" id="basic-addon1">Titulo</span>
+                <input required type="text" class="form-control" name="titulo" placeholder="Escriba un titulo de la publicación..." >
+              </div>
+              <div class="input-group sty-box-margin-top-5">
+                <span class="input-group-addon" id="basic-addon1">Tags</span>
+                <input type="text" class="form-control" name="tags" placeholder="Tags..." >
+
+              </div>
+              <textarea required="" class="form-control sty-box-margin-top-5" name="descripcion" placeholder="Escriba el mensaje..."></textarea>
+              <button class="btn btn-info sty-box-margin-top-5">Publicar</button>
+            </form>
+          </div>
+        </div>
+          <script>
+            $(function(){
+
+              Muro.get();
+              $("#form_post").submit(function(e){
+                e.preventDefault();
+
+                setElementDisableState("#form_post",0);
+                $.ajax({
+                  url: '{{path('url_muro_add')}}',
+                  type: 'POST',
+                  data: $("#form_post").serialize(),
+                  success: function(e){
+                    console.log(e);
+
+                    setElementDisableState(" #form_post",1);
+                    Muro.get();
+                    Muro.clear();
+                  }
+                });
+              });
+            });
+            var Muro = {
+              page: 0,
+              remove: function(id){
+
+                setElementDisableState(" #post_" + id,0);
+                $.ajax({
+                  url: '{{path('url_muro_del')}}',
+                  data: {id: id},
+                  success: function(e){
+
+                    $("#post_" + id).remove();
+                    $("#msg").html("");
+                  },
+                  complete: function(){
+                    setElementDisableState(" #post_" + id,1);
+                  }
+                });
+              },
+              clear: function(){
+                $("#post_container").find("input,textarea").each(function(e){
+                  $(e).val("");
+                });
+              },
+              get: function(p){
+                this.page = p === undefined ? this.page : p;
+                $("#msg").html("Cargando resultados ...");
+                setElementDisableState(" #post_container",0);
+                $.ajax({
+                  url: '{{path('url_muro_get')}}',
+                  data: {paginator_page: p},
+                  success: function(e){
+
+                    setElementDisableState(" #post_container",1);
+                    $("#post_container").html(e);
+                    $("#msg").html("");
+                  }
+                });
+              }
+            };
+            function getListPage(v){
+              Muro.get(v);
+		        }
+          </script>
+      {% else %}
+        <b>No ha iniciado sesión</b>
+      {% endif %}
+      <center><span id="msg"></span></center>
+      <div id="post_container"></div>
+      <style>
+        .post:hover{
+          text-decoration: none;
+          background-color: whitesmoke;
+        }
+        .post {
+          overflow: auto;
+          border-top-style: dotted;
+          border-top-width: 1px;
+          border-top-color: gainsboro;
+          padding: 5px;
+        }
+      </style>
+    </div>
+{% endblock %}

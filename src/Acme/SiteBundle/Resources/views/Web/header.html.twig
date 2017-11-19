@@ -11,7 +11,7 @@
                 </button>
                 <a class="navbar-brand" href="/">PFSPA</a>
             </div>
-            
+
             {% set section = path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) %}
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -19,17 +19,18 @@
                 <ul class="nav navbar-nav">
                     <li {% if '/' == section %}class="active"{% endif %}><a href="/">Inicio <span class="sr-only">(current)</span></a></li>
                     <li {% if 'noti' in section  %}class="active"{% endif %}><a href="{{path('noticias_url')}}">Noticias</a></li>
+                    <li {% if 'mur' in section  %}class="active"{% endif %}><a href="{{path('url_muro')}}">Muro</a></li>
 
                     <li  {% if 'nosotr' in section or 'herm' in section  %}class="active"{% endif %} class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Provincia <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="{{path('url_nosotros')}}">Quienes somos</a></li>
                             <li><a href="{{path("url_hermanos")}}">Hermanos</a></li>
-                            
+
                                 {#<li role="separator" class="divider"></li><li><a href="#">Misión - Visión</a></li>
                                 <li><a href="#">Historia</a></li>#}
                             {#<li><a href="#">Calendario de eventos</a></li>}#}
-                            
+
                         </ul>
                     </li>
                     {#
@@ -61,7 +62,7 @@
                         {% set data = app.request.session.get("hermano_data") %}
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img style="max-height: 25px;border-radius: 5px;" src="{{data.imagen_small_square}}"/> {{data.nick}}<span class="caret"></span></a>
-                            <ul class="dropdown-menu">                                
+                            <ul class="dropdown-menu">
                                 <li><a href="{{path('url_usuario')}}">Mi perfil</a></li>
 
                                 <li role="separator" class="divider"></li>

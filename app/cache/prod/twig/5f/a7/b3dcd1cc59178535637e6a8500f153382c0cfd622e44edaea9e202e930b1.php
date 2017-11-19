@@ -40,7 +40,7 @@ class __TwigTemplate_5fa7b3dcd1cc59178535637e6a8500f153382c0cfd622e44edaea9e202e
     public function block_body($context, array $blocks = array())
     {
         // line 8
-        echo "    <div class=\"www-header\" style=\"background-image: linear-gradient(to bottom, transparent, white), url(/img/pfspa_2017.jpg)\">
+        echo "    <div class=\"www-header\" style=\"background-image: linear-gradient(to bottom, transparent, white), url(/img/pfspa_2017.JPG)\">
         <span>";
         // line 9
         if ((!(null === $this->getContext($context, "data")))) {
@@ -56,9 +56,9 @@ class __TwigTemplate_5fa7b3dcd1cc59178535637e6a8500f153382c0cfd622e44edaea9e202e
     ";
         // line 13
         if ((null === $this->getContext($context, "data"))) {
-            echo "    
-        <div class=\"panel panel-default fixer\" style=\"max-width: 400px; margin-top: -100px;\">
-            <div class=\"panel-heading\" style=\"text-align: left\">Inicio de sesión</div>
+            // line 14
+            echo "        <div class=\"panel panel-default fixer\" style=\"max-width: 400px; margin-top: -100px;\">
+            <div class=\"panel-heading\" style=\"text-align: left\">Inicio de sesión de hermanos</div>
             <div class=\"panel-body\">
                 <center>
                     <img src=\"/img/logo.png\" width=\"200px\">
@@ -117,9 +117,8 @@ class __TwigTemplate_5fa7b3dcd1cc59178535637e6a8500f153382c0cfd622e44edaea9e202e
         </script>
     ";
         } else {
-            // line 69
-            echo "    
-        <div class=\"fixer sheet-art sty-box-overflow-auto sty-box-padding-5 \" style=\"margin-top: -90px;min-height: 800px;\">
+            // line 70
+            echo "        <div class=\"fixer sheet-art sty-box-overflow-auto sty-box-padding-5 \" style=\"margin-top: -90px;min-height: 800px;\">
             <div class=\"sty-box-overflow-auto\">
                 <script>
                     var data = JSON.parse('";
@@ -256,6 +255,6 @@ class __TwigTemplate_5fa7b3dcd1cc59178535637e6a8500f153382c0cfd622e44edaea9e202e
 
     public function getDebugInfo()
     {
-        return array (  214 => 145,  193 => 126,  190 => 125,  188 => 124,  184 => 122,  178 => 118,  156 => 99,  127 => 73,  121 => 69,  91 => 43,  58 => 13,  46 => 9,  43 => 8,  40 => 7,  35 => 6,  30 => 4,);
+        return array (  213 => 145,  192 => 126,  189 => 125,  187 => 124,  183 => 122,  177 => 118,  155 => 99,  126 => 73,  121 => 70,  91 => 43,  60 => 14,  58 => 13,  46 => 9,  43 => 8,  40 => 7,  35 => 6,  30 => 4,);
     }
 }

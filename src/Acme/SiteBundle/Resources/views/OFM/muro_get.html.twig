@@ -1,0 +1,21 @@
+
+{{buttons|raw}}
+      {% for x in data %}
+        <div id="post_{{x.id}}" class="post">
+          <img style="width:50px;border-radius:50px;" src="{{x.refhermano.imagen}}"/>
+          <a target="_blank" href="{{path('url_usuario', {id:x.refhermano.id})}}">@{{x.refhermano.nick}}</a>
+          <b>{{x.titulo}}</b>
+          {% if is_granted("ROLE_ADMIN") or app.session.get("hermano_id") == x.hermano %}
+          <button style="float:right;margin-left: 10px;" class="btn btn-danger" onclick="Muro.remove({{x.id}});">Eliminar</button>
+          {% endif %}
+           <a style="float:right;margin-left: 10px;" class="btn btn-info" target="_blank" href="{{path('url_muro_post', {id: x.id})}}">Abrir</a>
+
+          <i style="float:right;">{{x.fecha|date('Y/m/d - H:m:s')}}</i>
+          <div>
+            {{x.descripcionFinal|raw}}
+          </div>
+
+          <i style="float:right;"><b>Tags: </b>{{x.tags}}</i>
+        </div>
+      {% endfor %}
+      {{buttons|raw}}

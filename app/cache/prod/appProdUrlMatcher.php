@@ -162,30 +162,40 @@ class appProdUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirecta
 
         }
 
-        if (0 === strpos($pathinfo, '/p')) {
-            if (0 === strpos($pathinfo, '/portafolio')) {
-                // portafolio_ca_url
-                if (0 === strpos($pathinfo, '/portafolio/seccion') && preg_match('#^/portafolio/seccion(?:/(?P<ca>[^/]++))?$#s', $pathinfo, $matches)) {
-                    return $this->mergeDefaults(array_replace($matches, array('_route' => 'portafolio_ca_url')), array (  'id' => 0,  'ca' => 0,  '_controller' => 'Acme\\WebBundle\\Controller\\PortafolioController::indexAction',));
-                }
-
-                // portafolio_id_url
-                if (preg_match('#^/portafolio(?:/(?P<id>[^/]++))?$#s', $pathinfo, $matches)) {
-                    return $this->mergeDefaults(array_replace($matches, array('_route' => 'portafolio_id_url')), array (  'id' => 0,  'ca' => 0,  '_controller' => 'Acme\\WebBundle\\Controller\\PortafolioController::indexAction',));
-                }
-
-                // portafolio_url
-                if ($pathinfo === '/portafolio') {
-                    return array (  'id' => 0,  'ca' => 0,  '_controller' => 'Acme\\WebBundle\\Controller\\PortafolioController::indexAction',  '_route' => 'portafolio_url',);
-                }
-
+        if (0 === strpos($pathinfo, '/portafolio')) {
+            // portafolio_ca_url
+            if (0 === strpos($pathinfo, '/portafolio/seccion') && preg_match('#^/portafolio/seccion(?:/(?P<ca>[^/]++))?$#s', $pathinfo, $matches)) {
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'portafolio_ca_url')), array (  'id' => 0,  'ca' => 0,  '_controller' => 'Acme\\WebBundle\\Controller\\PortafolioController::indexAction',));
             }
 
-            // acme_site_default_path
-            if ($pathinfo === '/paths') {
-                return array (  '_controller' => 'Acme\\SiteBundle\\Controller\\DefaultController::pathAction',  '_route' => 'acme_site_default_path',);
+            // portafolio_id_url
+            if (preg_match('#^/portafolio(?:/(?P<id>[^/]++))?$#s', $pathinfo, $matches)) {
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'portafolio_id_url')), array (  'id' => 0,  'ca' => 0,  '_controller' => 'Acme\\WebBundle\\Controller\\PortafolioController::indexAction',));
             }
 
+            // portafolio_url
+            if ($pathinfo === '/portafolio') {
+                return array (  'id' => 0,  'ca' => 0,  '_controller' => 'Acme\\WebBundle\\Controller\\PortafolioController::indexAction',  '_route' => 'portafolio_url',);
+            }
+
+        }
+
+        if (0 === strpos($pathinfo, '/biblioteca')) {
+            // url_biblioteca
+            if ($pathinfo === '/biblioteca') {
+                return array (  '_controller' => 'Acme\\SiteBundle\\Controller\\BibliotecaController::bibliotecaLoginAction',  '_route' => 'url_biblioteca',);
+            }
+
+            // url_biblioteca_book
+            if (preg_match('#^/biblioteca/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'url_biblioteca_book')), array (  '_controller' => 'Acme\\SiteBundle\\Controller\\BibliotecaController::bookAction',));
+            }
+
+        }
+
+        // acme_site_default_path
+        if ($pathinfo === '/paths') {
+            return array (  '_controller' => 'Acme\\SiteBundle\\Controller\\DefaultController::pathAction',  '_route' => 'acme_site_default_path',);
         }
 
         // consult_relations
@@ -314,6 +324,34 @@ class appProdUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirecta
             // url_desarrollo_bugs
             if ($pathinfo === '/desarrollo/bugs') {
                 return array (  '_controller' => 'Acme\\SiteBundle\\Controller\\DefaultController::desarrollobugsAction',  '_route' => 'url_desarrollo_bugs',);
+            }
+
+        }
+
+        if (0 === strpos($pathinfo, '/muro')) {
+            // url_muro_del
+            if ($pathinfo === '/muro/del') {
+                return array (  '_controller' => 'Acme\\SiteBundle\\Controller\\MuroController::muroDelAction',  '_route' => 'url_muro_del',);
+            }
+
+            // url_muro_add
+            if ($pathinfo === '/muro/add') {
+                return array (  '_controller' => 'Acme\\SiteBundle\\Controller\\MuroController::muroAddAction',  '_route' => 'url_muro_add',);
+            }
+
+            // url_muro_get
+            if ($pathinfo === '/muro/get') {
+                return array (  '_controller' => 'Acme\\SiteBundle\\Controller\\MuroController::muroGetAction',  '_route' => 'url_muro_get',);
+            }
+
+            // url_muro
+            if ($pathinfo === '/muro') {
+                return array (  '_controller' => 'Acme\\SiteBundle\\Controller\\MuroController::muroLoginAction',  '_route' => 'url_muro',);
+            }
+
+            // url_muro_post
+            if (preg_match('#^/muro/(?P<id>[^/]++)$#s', $pathinfo, $matches)) {
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'url_muro_post')), array (  '_controller' => 'Acme\\SiteBundle\\Controller\\MuroController::postAction',));
             }
 
         }

@@ -56,11 +56,21 @@ class Posts
      */
     private $hermano;
 
+    /**
+     *
+     * @ORM\ManyToOne(targetEntity="Hermanos")
+     * @ORM\JoinColumn(name="hermano", referencedColumnName="id")
+     */
+    public $refhermano;
+
+    public function __construct(){
+      $this->fecha = new \DateTime();
+    }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -76,14 +86,14 @@ class Posts
     public function setTitulo($titulo)
     {
         $this->titulo = $titulo;
-    
+
         return $this;
     }
 
     /**
      * Get titulo
      *
-     * @return string 
+     * @return string
      */
     public function getTitulo()
     {
@@ -99,18 +109,29 @@ class Posts
     public function setDescripcion($descripcion)
     {
         $this->descripcion = $descripcion;
-    
+
         return $this;
     }
 
     /**
      * Get descripcion
      *
-     * @return string 
+     * @return string
      */
     public function getDescripcion()
     {
         return $this->descripcion;
+    }
+
+    public function getDescripcionFinal(){
+      $desc = $this->descripcion;
+      $desc = strip_tags($desc);
+      $desc = preg_replace(
+        '#((https?|ftp)://(\S*?\.\S*?))([\s)\[\]{},;"\':<]|\.\s|$)#i',
+        "<a href=\"$1\" target=\"_blank\">$1</a>$4",
+        $desc
+      );
+      return $desc;
     }
 
     /**
@@ -122,14 +143,14 @@ class Posts
     public function setTags($tags)
     {
         $this->tags = $tags;
-    
+
         return $this;
     }
 
     /**
      * Get tags
      *
-     * @return string 
+     * @return string
      */
     public function getTags()
     {
@@ -145,14 +166,14 @@ class Posts
     public function setFecha($fecha)
     {
         $this->fecha = $fecha;
-    
+
         return $this;
     }
 
     /**
      * Get fecha
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getFecha()
     {
@@ -168,14 +189,14 @@ class Posts
     public function setHermano($hermano)
     {
         $this->hermano = $hermano;
-    
+
         return $this;
     }
 
     /**
      * Get hermano
      *
-     * @return integer 
+     * @return integer
      */
     public function getHermano()
     {

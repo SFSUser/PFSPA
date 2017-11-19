@@ -93,16 +93,16 @@ class DefaultController extends Controller {
         return new \Symfony\Component\HttpFoundation\Response($str);
     }
 
-    /**
-     * @Route("/nosotros/{seccion}", name="url_nosotros")
-     */
-    public function nosotrosAction($seccion = "nosotros") {
+        /**
+         * @Route("/nosotros/{seccion}", name="url_nosotros")
+         */
+        public function nosotrosAction($seccion = "nosotros") {
 
-        return $this->render("AcmeSiteBundle:OFM:nosotros.html.twig", array(
-                    "seccion" => $seccion//            "data" => $data
-        ));
-    }
-
+            return $this->render("AcmeSiteBundle:OFM:nosotros.html.twig", array(
+                        "seccion" => $seccion//            "data" => $data
+            ));
+        }
+        
     /**
      * @Route("/calendario", name="url_calendario")
      */
