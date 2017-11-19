@@ -10,26 +10,28 @@
         <div class="col-md-2">
             <img style="max-height: 180px;" src="{{asset('/img/logo.png')}}"/>
         </div>
-        <div class="col-md-10">   
-            <span>Provincia Franciscana de San Pablo Apóstol</span>     
-            <p>                        
+        <div class="col-md-10">
+            <span>Provincia Franciscana de San Pablo Apóstol</span>
+            <p>
                 {{render(controller('AcmeSFSBundle:Segment:index',{identifier:'OFM_main_descripcion', type: 'textarea'}))}}
             </p>
         </div>
     </div>
     <div class="www-section sty-box-overflow-auto sty-box-text-center">
         <div class="col-md-4">
-            <img height="100px" src="{{asset("/img/mesa_senior.png")}}"><br>
+            {#}<img height="100px" src="{{asset("/img/mesa_senior.png")}}"><br>#}
             <b>Mesa del señor</b><br>
             La mesa del Señor nace de la necesidad de que los hermanos del mundo colaboren en la construcción y propuesta del reino de Dios.<br>
             <a target="_blank" href="http://mesadelsenor.co" type="button" class="btn btn-warning">Mas información...</a>
         </div>
         <div class="col-md-4">
-            <b>Franciscanos</b><br>
-            <button type="button" class="btn btn-warning">Mas información...</button>
+            <b>Fraternidades</b><br>
+            Estamos ubicados en varios departamentos del país en zonas marginales, conozca aqui donde estamos ubicados.
+            <button type="button" href="{{path('url_fraternidades')}}" class="btn btn-warning">Mas información...</button>
         </div>
         <div class="col-md-4">
-            <b>Franciscanos</b><br>
+            <b>¿Quienes somos?</b><br>
+            Conozca más sobre nuestra provinciay su historia.
             <button type="button" class="btn btn-warning">Mas información...</button>
         </div>
     </div>
@@ -61,9 +63,9 @@
                             {% for item in data %}
                                 <li>
                                     {% set url = null %}
-                                    {% if not item.imagenes_all is empty %} 
+                                    {% if not item.imagenes_all is empty %}
                                         {% set url = item.imagenes_random.large_thumbnail %}
-                                    {% elseif item.descripcion_first_media is defined %} 
+                                    {% elseif item.descripcion_first_media is defined %}
                                         {% set url = item.descripcion_first_media %}
                                     {% endif %}
                                     {% if not url is null %}
@@ -119,16 +121,16 @@
                         <div class="media">
                             <a class="pull-left" href="{{path('noticia_url', {id: item.id})}}">
                                 {% set url = null %}
-                                {% if not item.imagenes_all is empty %} 
+                                {% if not item.imagenes_all is empty %}
                                     {% set url = item.imagenes_random.small_square %}
-                                {% elseif item.descripcion_first_media is defined %} 
+                                {% elseif item.descripcion_first_media is defined %}
                                     {% set url = item.descripcion_first_media %}
                                 {% endif %}
                                 {% if not url is null %}
                                     <img width="90px" class="media-object" src="{{url}}" alt="{{item.titulo}}">
                                 {% else %}
                                     <div class="media-object" style="width: 90px;height: 90px;"></div>
-                                {% endif %}   
+                                {% endif %}
                             </a>
                             <div class="media-body">
                                 <h4 class="media-heading"><a href="{{path('noticia_url', {id: item.id})}}">{{item.titulo}}</a></h4>

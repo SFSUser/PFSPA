@@ -1,10 +1,13 @@
 {# empty Twig template #}
 {% extends template_parent %}
 {% block title %}
-	Provincia de San Pablo Apóstol
+	Provincia de San Pablo Apï¿½stol
 {% endblock %}
 {% block body %}
-	<div class="sty-box-padding-5 sheet-art " style="margin-top: 400px;">
-		{% block component %} {{ parent() }}{% endblock %}
-	</div>
+    <div class="www-header" style="height: 200px; background-image: linear-gradient(to bottom, transparent, white),  url(/img/editor.jpeg)">
+        <span>Noticia</span>
+    </div>
+    <div class="fixer sheet-art sty-box-padding-5">
+        {% block component %} {{ parent() }}{% endblock %}
+    </div>
 {% endblock %}

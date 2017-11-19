@@ -3,7 +3,7 @@
       {% for x in data %}
         <div id="post_{{x.id}}" class="post">
           <img style="width:50px;border-radius:50px;" src="{{x.refhermano.imagen}}"/>
-          <a target="_blank" href="{{path('url_usuario', {id:x.refhermano.id})}}">@{{x.refhermano.nick}}</a>
+          <a target="_blank" href="{{path('url_hermano', {id:x.refhermano.id})}}">@{{x.refhermano.nick}}</a>
           <b>{{x.titulo}}</b>
           {% if is_granted("ROLE_ADMIN") or app.session.get("hermano_id") == x.hermano %}
           <button style="float:right;margin-left: 10px;" class="btn btn-danger" onclick="Muro.remove({{x.id}});">Eliminar</button>
