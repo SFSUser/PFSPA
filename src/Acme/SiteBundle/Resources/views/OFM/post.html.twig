@@ -15,7 +15,7 @@
               <tr>
                 <td style="text-align:center">
                   <img style="width:90px;border-radius:90px;" src="{{data.refhermano.imagen}}"/>
-                  <br><a target="_blank" href="{{path('url_usuario', {id:data.refhermano.id})}}">@{{data.refhermano.nick}}</a>
+                  <br><a target="_blank" href="{{path('url_hermano', {id:data.refhermano.id})}}">@{{data.refhermano.nick}}</a>
                 </td>
                 <td><h3>{{data.titulo}}</h3></td>
               </tr>
@@ -29,5 +29,19 @@
                 <i style="float:right;">{{data.fecha|date('Y/m/d - H:m:s')}}</i>
             {% endif %}
         </div>
+        <hr>
+        {% if data is not null %}
+        <div class="sty-box-overflow-auto">
+            <div class="pull-right">
+                {{render(controller('AcmeSFSBundle:Utils:social',
+    {'share_link': app.request.getUri(), 'site_link':app.request.getHost(),'description':data.titulo}
+    ))}}
+            </div>
+        </div>
+        <hr class="featurette-divider"/>
+        <div>
+            {{render(controller('AcmeSFSBundle:Utils:facebookcomments', {url: path('url_muro_post', {id: data.id})}))}}
+        </div>
+        {% endif %}
     </div>
 {% endblock %}

@@ -36,7 +36,7 @@ class __TwigTemplate_58d28ce8db4d3d53ccc89633daec2563f90027644d9fd46886e231ab4ad
             echo "\"/>
           <a target=\"_blank\" href=\"";
             // line 6
-            echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("url_usuario", array("id" => $this->getAttribute($this->getAttribute($this->getContext($context, "x"), "refhermano"), "id"))), "html", null, true);
+            echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("url_hermano", array("id" => $this->getAttribute($this->getAttribute($this->getContext($context, "x"), "refhermano"), "id"))), "html", null, true);
             echo "\">@";
             echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute($this->getContext($context, "x"), "refhermano"), "nick"), "html", null, true);
             echo "</a>

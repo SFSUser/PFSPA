@@ -149,46 +149,43 @@ class __TwigTemplate_7c7331b652529ee739de7fbb379058fa7c575611e44c03e5c1183f6a226
         echo "                        ";
         if ((!$this->env->getExtension('app_extension')->roleGranted("ADMIN"))) {
             // line 76
-            echo "                        <li ><a href=\"";
-            echo $this->env->getExtension('routing')->getPath("adminlogin");
-            echo "\">Iniciar sesión</a></li>
-                        ";
+            echo "                        ";
         } else {
-            // line 78
+            // line 77
             echo "                        <li class=\"dropdown\">
                             <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">Sesión  - ";
-            // line 79
+            // line 78
             echo twig_escape_filter($this->env, twig_upper_filter($this->env, $this->getAttribute($this->getAttribute($this->getContext($context, "app"), "user"), "username")), "html", null, true);
             echo "<span class=\"caret\"></span></a>
                             <ul class=\"dropdown-menu\">
                                 <li><a href=\"#\">Mi cuenta</a></li>
                                 <li><a href=\"";
-            // line 82
+            // line 81
             echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("add_editor", array("bundle" => "Site", "entity" => "Fraternidad")), "html", null, true);
             echo "\"><span class=\"glyphicon glyphicon-pencil\"></span> Fraternidades</a></li>
                                 <li><a href=\"";
-            // line 83
+            // line 82
             echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("add_editor", array("bundle" => "Site", "entity" => "Hermanos")), "html", null, true);
             echo "\"><span class=\"glyphicon glyphicon-pencil\"></span> Hermanos</a></li>
                                 <li><a href=\"";
-            // line 84
+            // line 83
             echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("add_editor", array("bundle" => "Site", "entity" => "Posts")), "html", null, true);
             echo "\"><span class=\"glyphicon glyphicon-pencil\"></span> Posts</a></li>
                                 <li><a href=\"";
-            // line 85
+            // line 84
             echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("add_editor", array("bundle" => "Web", "entity" => "WebNoticias")), "html", null, true);
             echo "\"><span class=\"glyphicon glyphicon-pencil\"></span> Noticias</a></li>
 
                                 <li role=\"separator\" class=\"divider\"></li>
                                 <li><a href=\"";
-            // line 88
+            // line 87
             echo $this->env->getExtension('routing')->getPath("adminlogout");
             echo "\">Cerrar sesión</a></li>
                             </ul>
                         </li>
                     ";
         }
-        // line 92
+        // line 91
         echo "                </ul>
 
             </div><!-- /.navbar-collapse -->
@@ -214,6 +211,6 @@ class __TwigTemplate_7c7331b652529ee739de7fbb379058fa7c575611e44c03e5c1183f6a226
 
     public function getDebugInfo()
     {
-        return array (  192 => 92,  185 => 88,  179 => 85,  175 => 84,  171 => 83,  167 => 82,  161 => 79,  158 => 78,  152 => 76,  149 => 75,  143 => 73,  136 => 69,  130 => 66,  123 => 64,  120 => 63,  117 => 62,  115 => 61,  99 => 52,  90 => 51,  85 => 33,  83 => 32,  78 => 28,  74 => 27,  66 => 24,  57 => 22,  49 => 21,  43 => 20,  37 => 16,  35 => 15,  19 => 1,);
+        return array (  189 => 91,  182 => 87,  176 => 84,  172 => 83,  168 => 82,  164 => 81,  158 => 78,  155 => 77,  152 => 76,  149 => 75,  143 => 73,  136 => 69,  130 => 66,  123 => 64,  120 => 63,  117 => 62,  115 => 61,  99 => 52,  90 => 51,  85 => 33,  83 => 32,  78 => 28,  74 => 27,  66 => 24,  57 => 22,  49 => 21,  43 => 20,  37 => 16,  35 => 15,  19 => 1,);
     }
 }

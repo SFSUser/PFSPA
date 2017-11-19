@@ -66,7 +66,7 @@ class __TwigTemplate_aa34e4fb00f41c12245bea54a0cd4287a5dccdcfcb40b4de9b72e493a25
             echo "\"/>
                   <br><a target=\"_blank\" href=\"";
             // line 18
-            echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("url_usuario", array("id" => $this->getAttribute($this->getAttribute($this->getContext($context, "data"), "refhermano"), "id"))), "html", null, true);
+            echo twig_escape_filter($this->env, $this->env->getExtension('routing')->getPath("url_hermano", array("id" => $this->getAttribute($this->getAttribute($this->getContext($context, "data"), "refhermano"), "id"))), "html", null, true);
             echo "\">@";
             echo twig_escape_filter($this->env, $this->getAttribute($this->getAttribute($this->getContext($context, "data"), "refhermano"), "nick"), "html", null, true);
             echo "</a>
@@ -97,7 +97,31 @@ class __TwigTemplate_aa34e4fb00f41c12245bea54a0cd4287a5dccdcfcb40b4de9b72e493a25
         }
         // line 31
         echo "        </div>
-    </div>
+        <hr>
+        ";
+        // line 33
+        if ((!(null === $this->getContext($context, "data")))) {
+            // line 34
+            echo "        <div class=\"sty-box-overflow-auto\">
+            <div class=\"pull-right\">
+                ";
+            // line 36
+            echo $this->env->getExtension('http_kernel')->renderFragment($this->env->getExtension('http_kernel')->controller("AcmeSFSBundle:Utils:social", array("share_link" => $this->getAttribute($this->getAttribute($this->getContext($context, "app"), "request"), "getUri", array(), "method"), "site_link" => $this->getAttribute($this->getAttribute($this->getContext($context, "app"), "request"), "getHost", array(), "method"), "description" => $this->getAttribute($this->getContext($context, "data"), "titulo"))));
+            // line 38
+            echo "
+            </div>
+        </div>
+        <hr class=\"featurette-divider\"/>
+        <div>
+            ";
+            // line 43
+            echo $this->env->getExtension('http_kernel')->renderFragment($this->env->getExtension('http_kernel')->controller("AcmeSFSBundle:Utils:facebookcomments", array("url" => $this->env->getExtension('routing')->getPath("url_muro_post", array("id" => $this->getAttribute($this->getContext($context, "data"), "id"))))));
+            echo "
+        </div>
+        ";
+        }
+        // line 46
+        echo "    </div>
 ";
     }
 
@@ -113,6 +137,6 @@ class __TwigTemplate_aa34e4fb00f41c12245bea54a0cd4287a5dccdcfcb40b4de9b72e493a25
 
     public function getDebugInfo()
     {
-        return array (  99 => 31,  94 => 29,  90 => 28,  84 => 25,  76 => 20,  69 => 18,  65 => 17,  60 => 14,  58 => 13,  46 => 9,  43 => 8,  40 => 7,  35 => 6,  30 => 4,);
+        return array (  124 => 46,  118 => 43,  111 => 38,  109 => 36,  105 => 34,  103 => 33,  99 => 31,  94 => 29,  90 => 28,  84 => 25,  76 => 20,  69 => 18,  65 => 17,  60 => 14,  58 => 13,  46 => 9,  43 => 8,  40 => 7,  35 => 6,  30 => 4,);
     }
 }
